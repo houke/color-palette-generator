@@ -1,0 +1,16 @@
+.media-modal-content .compat-item .media-types-required-info,
+.media-modal-content .compat-item table.compat-attachment-fields th br{
+	display: none;
+}
+
+.media-modal-content .compat-item table.compat-attachment-fields th{
+	max-width: 30%;
+}
+
+.media-modal-content .compat-item table.compat-attachment-fields th span{
+	font-size: 12px;
+}
+
+.media-modal-content .compat-item table.compat-attachment-fields td input[type="checkbox"]{
+	margin-left: 0;
+}

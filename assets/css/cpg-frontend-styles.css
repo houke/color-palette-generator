@@ -1,0 +1,69 @@
+.cpg__palette-item{
+	display: inline-block;
+	position: relative;
+}
+
+.cpg__palette-holder .cpg__dominant-color{
+	width: 100%;
+	height: 30px;
+	margin: 5px 0 0;
+	position: relative;
+}
+
+.cpg__palette-holder .cpg__palette-list{
+	margin: 5px 0 0;
+	padding: 0;
+	list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cpg__palette-holder .cpg__palette-list:before,
+.cpg__palette-holder .cpg__palette-list:after{
+	content: "";
+	width: 100%;
+	display: table;
+}
+
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item{
+	float: left;
+	width: 10%;
+	height: 30px;
+	margin: 0;
+	position: relative;
+    flex: 1 auto;
+}
+.cpg__palette-holder .cpg__dominant-color:after,
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:after{
+	content: attr(data-title);
+	position: absolute;
+	background-color: rgba(0,0,0,.45);
+	left: 0;
+	width: 100%;
+	top: 0;
+	height: 100%;
+	color: #FFF;
+	font-size: 12px;
+	text-align: center;
+	line-height: 30px;
+	letter-spacing: 0.5px;
+	opacity: 0;
+}
+
+.cpg__palette-holder .cpg__dominant-color:hover:after,
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:hover:after{
+	opacity: 1;
+}
+
+.cpg-image{
+	padding: 10px;
+	border: 1px solid #eee;
+	max-width: 100%;
+	display: inline-block;
+	background-color: #FFF;
+	margin-bottom: 10px;
+}
+
+.cpg__palette-holder p.cpg__text{
+	margin: 5px 0 0;
+}
