@@ -128,6 +128,12 @@ function cpg_enqueue_scripts() {
 	    	plugins_url( 'assets/css/cpg-frontend-styles.css', dirname(__FILE__) )
 		);
 
+		wp_register_style(
+	    	'cpg-frontend-widget-styles-css',
+	    	plugins_url( 'assets/css/cpg-frontend-widget-styles.css', dirname(__FILE__) )
+		);
+
+
 	}
 }
 add_action( 'wp_enqueue_scripts', 'cpg_enqueue_scripts' );

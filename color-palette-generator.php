@@ -44,4 +44,5 @@ require_once CPG_DIR . 'inc/cpg-admin-shared-functions.php';
 require_once CPG_DIR . 'inc/cpg-settings.php';
 require_once CPG_DIR . 'inc/cpg-admin-layout.php';
 require_once CPG_DIR . 'inc/cpg-ajax.php';
+require_once CPG_DIR . 'inc/cpg-admin-widget.php';
 require_once CPG_DIR . 'inc/cpg-frontend-show-palette-on-attachment.php';
