@@ -9,14 +9,21 @@ function cpg_add_palette() {
 		$dominant = isset( $_POST['dominant'] ) ? $_POST['dominant'] : "";
 		$palette = isset( $_POST['palette'] ) ? $_POST['palette'] : "";
 		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
-		// $PKR = new PKRoundColor();
-		// $dominant = $PKR->getRoundedColor($dominant);
+
+		$PKR = new PKRoundColor();
+		$parent = $PKR->getRoundedColor($dominant);
 
 		if(
 			get_post_type( $post_id ) == 'attachment' &&
 			wp_verify_nonce( $nonce, 'cpg_add_palette_'.$post_id.'_nonce' )
 		){
-			wp_set_object_terms( $post_id, $dominant, 'cpg_dominant_color' );
+			wp_set_object_terms( $post_id, $dominant, 'cpg_dominant_color', true );
+
+			$term_parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
+			$term_child  = get_term_by( 'slug', $dominant, 'cpg_dominant_color' );
+			delete_option( 'cpg_dominant_color_children' );
+			wp_update_term( $term_child->term_id, 'cpg_dominant_color', array( 'parent' => $term_parent->term_id ) );
+
 			wp_set_object_terms( $post_id, $palette, 'cpg_palette' );
 
 			$output = cpg_admin_show_palette( $dominant, $palette, $post_id );
@@ -63,11 +70,20 @@ function cpg_bulk_add_palette() {
 		$palette = isset( $_POST['palette'] ) ? $_POST['palette'] : "";
 		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
 
+		$PKR = new PKRoundColor();
+		$parent = $PKR->getRoundedColor($dominant);
+
 		if(
 			get_post_type( $post_id ) == 'attachment' &&
 			wp_verify_nonce( $nonce, 'cpg_bulk_generate_palette_'.$post_id.'_nonce' )
 		) {
 			wp_set_object_terms( $post_id, $dominant, 'cpg_dominant_color' );
+
+			$term_parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
+			$term_child  = get_term_by( 'slug', $dominant, 'cpg_dominant_color' );
+			delete_option( 'cpg_dominant_color_children' );
+			wp_update_term( $term_child->term_id, 'cpg_dominant_color', array( 'parent' => $term_parent->term_id ) );
+
 			wp_set_object_terms( $post_id, $palette, 'cpg_palette' );
 
 			$next_img = get_attachment_without_colors( $post_id );

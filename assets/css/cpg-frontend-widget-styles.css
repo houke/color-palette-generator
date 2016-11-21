@@ -1,6 +1,8 @@
 .cpg-widget{
 	border: 1px solid #eee;
 	padding: 0;
+	background-color: #fff;
+	margin-bottom: 10px;
 }
 
 .cpg-widget .cpg-widget__title{

@@ -19,6 +19,8 @@ function cpg_shortcode_is_present($shortcode = '') {
 
 class CPG_Widget extends WP_Widget {
 
+	protected $PKR;
+
     function __construct() {
     	parent::__construct(
 	        'cpg_search_widget',
@@ -79,15 +81,17 @@ class CPG_Widget extends WP_Widget {
     function widget( $args, $instance ) {
 	    if ( is_active_widget( false, false, 'cpg_search_widget', true ) ) {
 	    	wp_enqueue_style( 'cpg-frontend-widget-styles-css' );
-	    	$predefined_colors = cpg_return_color_type();
+	    	$predefined_colors = cpg_return_colors();
 	?>
 		<div class="widget cpg-widget">
 			<h2 class="cpg-widget__title"><?php echo $instance['title']; ?></h2>
 			<ul class="cpg-widget__color-list">
-			<?php foreach ($predefined_colors as $name => $code) { ?>
+			<?php
+				foreach ($predefined_colors as $name => $code) {
+			?>
 				<li class="cpg-widget__color-item">
 					<a
-						href="<?php echo $instance['colorpage']; ?>/color/<?php echo $name; ?>/"
+						href="<?php echo $instance['colorpage']; ?>color/<?php echo $name; ?>/"
 						class="cpg-widget__color-link"
 						style="background-color: #<?php echo $code; ?>"
 						data-title="<?php echo str_replace('-', ' ', $name); ?>"

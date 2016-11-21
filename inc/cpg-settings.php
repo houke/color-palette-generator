@@ -171,90 +171,6 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 }
 add_filter( 'image_send_to_editor', 'cpg_send_image_to_editor', 12, 9 );
 
-// add_filter('post_gallery', 'iv_post_gallery_output', 10, 2);
-// function iv_post_gallery_output($output, $attr) {
-
-//     global $post;
-
-//     if (isset($attr['orderby'])) {
-//         $attr['orderby'] = sanitize_sql_orderby($attr['orderby']);
-//         if (!$attr['orderby']){
-//             unset($attr['orderby']);
-//         }
-//     }
-
-//     extract(shortcode_atts(array(
-//         'order' => 'ASC',
-//         'orderby' => 'menu_order ID',
-//         'id' => $post->ID,
-//         'itemtag' => 'dl',
-//         'icontag' => 'dt',
-//         'captiontag' => 'dd',
-//         'columns' => 3,
-//         'size' => 'medium',
-//         'include' => '',
-//         'exclude' => ''
-//     ), $attr));
-
-//     $id = intval($id);
-//     if ('RAND' == $order){
-//     	$orderby = 'none';
-//     }
-
-//     if (!empty($include)) {
-//         $include = preg_replace('/[^0-9,]+/', '', $include);
-//         $_attachments = get_posts(
-//         	array(
-//         		'include' => $include,
-//         		'post_status' => 'inherit',
-//         		'post_type' => 'attachment',
-//         		'post_mime_type' => 'image',
-//         		'order' => $order,
-//         		'orderby' => $orderby
-//         	)
-//         );
-
-//         $attachments = array();
-//         foreach ($_attachments as $key => $val) {
-//             $attachments[$val->ID] = $_attachments[$key];
-//         }
-//     }
-
-//     if (empty($attachments)){
-//     	return '';
-//     }
-
-//     // Here's your actual output, you may customize it to your need
-//     $output = '<div class="o-gallery o-gallery--'. $columns.'">';
-
-//     // Now you loop through each attachment
-//     foreach ($attachments as $id => $attachment) {
-//     	$image_med_attributes = wp_get_attachment_image_src( $id, 'medium_large' );
-// 		$image_attributes = wp_get_attachment_image_src( $id, 'full' );
-
-// 		if($size != 'full'){
-//     		$image_show = wp_get_attachment_image_src( $id, $size );
-// 		}else{
-// 			$image_show = $image_attributes;
-// 		}
-
-//         $output .= '<dl class="o-gallery__item">';
-//         $output .= '<dt class="o-gallery__icon">';
-//         $output .= '<a href="' . $image_attributes[0] . '" data-src="' . $image_attributes[0] . '" data-size="' . $image_attributes[1] . 'x' . $image_attributes[2] . '" data-med-src="' . $image_med_attributes[0] . '" data-med-size="' . $image_med_attributes[1] . 'x' . $image_med_attributes[2] . '" class="o-gallery__link">';
-//         $output .= '<img src="'.$image_show[0].'" alt="" class="o-gallery__img"/>';
-//         $output .= '</a>';
-//         $output .= '</dt>';
-//         if($attachment->post_excerpt){
-//         	$output .= '<dd class="o-gallery__caption">'.$attachment->post_excerpt.'</dd>';
-//         }
-//         $output .= '</dl>';
-//     }
-
-//     $output .= '</div>';
-
-//     return $output;
-// }
-
 //Save palette options to image insert
 function cpg_add_media_edit_fields_save( $post, $attachment ) {
     $show_value = isset( $attachment['cpg_show'] ) ? $attachment['cpg_show'] : '0';
@@ -368,42 +284,6 @@ function cpg_settings_page(){
 					</div>
 				</div>
 			</div>
-
-			<?php /* $colors = cpg_return_color_type(); ?>
-			<table class="wp-list-table widefat fixed striped media">
-				<thead>
-					<tr>
-						<th scope="col" class="manage-column cpg-column--color"><?php _e('Main colors', 'cpg'); ?></th>
-						<th scope="col" class="manage-column cpg-column--tint"><?php _e('Tints', 'cpg'); ?></th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<?php _e('The dominant color of your images will be matched with one of the predefined colors above. The selected color on the searchpage will return all images with a dominant color matched to the tints of that color.', 'cpg'); ?>
-						</td>
-					</tr>
-				</tfoot>
-				<tbody>
-				<?php foreach($colors as $colorname => $colorcode){ ?>
-					<tr>
-						<td>
-							<span class="cpg__table-color cpg__table-color--main" style="background-color: #<?php echo $colorcode; ?>;" data-title="#<?php echo $colorcode; ?>"></span>
-							<span class="cpg__table-color-name"><?php echo str_replace('-', ' ', $colorname); ?></span>
-						</td>
-						<td>
-						<?php
-							$tints = cpg_get_tint_colors($colorname);
-							foreach ($tints as $colorcode) {
-						?>
-							<span class="cpg__table-color" style="background-color: #<?php echo $colorcode; ?>;"  data-title="#<?php echo $colorcode; ?>"></span>
-						<?php } ?>
-						</td>
-					</tr>
-				<?php } ?>
-				</tbody>
-			</table>
-			<?php */ ?>
 		</div>
 		<?php } ?>
 	</div>
@@ -414,13 +294,27 @@ function cpg_settings_page(){
 function cpg_register_taxonomies(){
 
     $args = array(
+        'public' => true,
+        'update_count_callback' => '_update_generic_term_count',
+        'query_var' => false,
+        'hierarchical' => true
+    );
+
+    register_taxonomy( 'cpg_dominant_color', array( 'attachment' ), $args );
+
+    $args_palette = array(
         'public' => false,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false
     );
+    register_taxonomy( 'cpg_palette', array( 'attachment' ), $args_palette );
 
-    register_taxonomy( 'cpg_dominant_color', array( 'attachment' ), $args );
-    register_taxonomy( 'cpg_palette', array( 'attachment' ), $args );
+    $searchcolors = cpg_return_colors();
+
+    foreach ($searchcolors as $name => $code) {
+    	$name = str_replace('-', ' ', $name);
+   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => ucfirst($name) ) );
+    }
 }
 add_action( 'init', 'cpg_register_taxonomies' );
 
