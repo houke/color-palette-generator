@@ -4,6 +4,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 add_filter( 'prepend_attachment', 'custom_prepend_attachment' );
 function custom_prepend_attachment( $attachment_content ){
 
+
+	$PKR = new PKRoundColor();
+	$parent = $PKR->getRoundedColor('#c38563');
+
 	$options = get_option('cpg_options');
 	if( isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ){
 	    wp_enqueue_style( 'cpg-frontend-styles-css' );

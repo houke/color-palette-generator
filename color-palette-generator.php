@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 //Constants
 $prefix  = 'CPG_';
-$version = '0.1';
+$version = '1.0';
 
 //Define variables
 $cpg_constants = array(

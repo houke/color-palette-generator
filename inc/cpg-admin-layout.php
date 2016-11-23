@@ -137,8 +137,12 @@ function cpg_enqueue_scripts() {
 	    	plugins_url( 'assets/css/cpg-frontend-search-page-styles.css', dirname(__FILE__) )
 		);
 
-		if( is_search() && get_query_var('color') != "" ){
-			wp_enqueue_style( 'cpg-frontend-search-page-styles-css' );
+		if( is_search() ){
+			global $wp_query;
+			$check_search = explode('/', $wp_query->query['s']);
+			if( get_query_var('color') != "" || $check_search[0] == 'color' ){
+				wp_enqueue_style( 'cpg-frontend-search-page-styles-css' );
+			}
 		}
 
 	}

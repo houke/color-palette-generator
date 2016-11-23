@@ -73,7 +73,7 @@ class CPG_Widget extends WP_Widget {
 			?>
 				<li class="cpg-widget__color-item">
 					<a
-						href="<?php echo $instance['colorpage']; ?>/color/<?php echo $name; ?>/"
+						href="<?php echo rtrim($instance['colorpage'], '/'); ?>/color/<?php echo $name; ?>/"
 						class="cpg-widget__color-link"
 						style="background-color: #<?php echo $code; ?>"
 						data-title="<?php echo str_replace('-', ' ', $name); ?>"
