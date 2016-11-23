@@ -312,8 +312,7 @@ function cpg_register_taxonomies(){
     $searchcolors = cpg_return_colors();
 
     foreach ($searchcolors as $name => $code) {
-    	$name = str_replace('-', ' ', $name);
-   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => ucfirst($name) ) );
+   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
     }
 }
 add_action( 'init', 'cpg_register_taxonomies' );

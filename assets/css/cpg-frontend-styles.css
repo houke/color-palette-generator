@@ -8,6 +8,8 @@
 	height: 30px;
 	margin: 5px 0 0;
 	position: relative;
+	display: block;
+	text-decoration: none;
 }
 
 .cpg__palette-holder .cpg__palette-list{
@@ -33,26 +35,48 @@
 	position: relative;
     flex: 1 auto;
 }
+
 .cpg__palette-holder .cpg__dominant-color:after,
 .cpg__palette-holder .cpg__palette-list .cpg__palette-item:after{
 	content: attr(data-title);
 	position: absolute;
-	background-color: rgba(0,0,0,.45);
-	left: 0;
-	width: 100%;
-	top: 0;
-	height: 100%;
+	background-color: #000;
+	border-radius: 3px;
+	font-size: 13px;
+	line-height: 16px;
+	letter-spacing: 0.25px;
 	color: #FFF;
-	font-size: 12px;
+	bottom: 100%;
+	display: none;
+	margin-bottom: 2px;
 	text-align: center;
-	line-height: 30px;
-	letter-spacing: 0.5px;
-	opacity: 0;
+	text-indent: 0;
+	text-transform: capitalize;
+	white-space: nowrap;
+	padding: 2px 5px;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	-moz-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
+.cpg__palette-holder .cpg__dominant-color:before,
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:before{
+	content: "";
+	position: absolute;
+	left: 50%;
+	margin-left: -4px;
+	border: 4px solid transparent;
+	border-top-color: #000;
+	top: -2px;
+	display: none;
 }
 
 .cpg__palette-holder .cpg__dominant-color:hover:after,
-.cpg__palette-holder .cpg__palette-list .cpg__palette-item:hover:after{
-	opacity: 1;
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:hover:after,
+.cpg__palette-holder .cpg__dominant-color:hover:before,
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:hover:before{
+	display: block;
 }
 
 .cpg-image{

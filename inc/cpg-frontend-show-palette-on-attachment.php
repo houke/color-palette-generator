@@ -9,19 +9,23 @@ function custom_prepend_attachment( $attachment_content ){
 	    wp_enqueue_style( 'cpg-frontend-styles-css' );
 
 		$output = wp_get_attachment_link( 0, 'large', false );
-		if( $colors = get_the_terms( 0, 'cpg_dominant_color' ) ) {
+		$colors = get_the_terms( 0, 'cpg_dominant_color' );
+		$palette = get_the_terms( 0, 'cpg_palette' );
+		if( $colors ) {
 			$dominant = $colors[0];
+			$parent = get_term( $dominant->parent, 'cpg_dominant_color' );
 	    	$dominant = $dominant->name;
-	    	$output .= '<div class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></div>';
+	    	$output .= '<a href="'.get_bloginfo( 'url' ).'/color/'.$parent->description.'" class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></a>';
 	    }
 
-		if( $palette = get_the_terms( 0, 'cpg_palette' ) ){
+		if( $palette ){
 			$output .= '<ul class="cpg__palette-list">';
 			shuffle($palette);
 			foreach ( $palette as $color ) {
 				if( is_object( $color ) ){
 					$color = $color->name;
 				}
+
 				$output .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.$color.';" data-title="'.$color.'"></li>';
 			}
 			$output .= '</ul>';

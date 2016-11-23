@@ -132,7 +132,14 @@ function cpg_enqueue_scripts() {
 	    	'cpg-frontend-widget-styles-css',
 	    	plugins_url( 'assets/css/cpg-frontend-widget-styles.css', dirname(__FILE__) )
 		);
+		wp_register_style(
+	    	'cpg-frontend-search-page-styles-css',
+	    	plugins_url( 'assets/css/cpg-frontend-search-page-styles.css', dirname(__FILE__) )
+		);
 
+		if( is_search() && get_query_var('color') != "" ){
+			wp_enqueue_style( 'cpg-frontend-search-page-styles-css' );
+		}
 
 	}
 }

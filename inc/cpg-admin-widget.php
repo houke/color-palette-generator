@@ -1,22 +1,4 @@
 <?php
-
-function cpg_shortcode_is_present($shortcode = '') {
-
-    $post_to_check = get_post(get_the_ID());
-
-    $found = false;
-
-    if (!$shortcode) {
-        return $found;
-    }
-
-    if ( stripos($post_to_check->post_content, '[' . $shortcode) !== false ) {
-        $found = true;
-    }
-
-    return $found;
-}
-
 class CPG_Widget extends WP_Widget {
 
 	protected $PKR;
@@ -91,7 +73,7 @@ class CPG_Widget extends WP_Widget {
 			?>
 				<li class="cpg-widget__color-item">
 					<a
-						href="<?php echo $instance['colorpage']; ?>color/<?php echo $name; ?>/"
+						href="<?php echo $instance['colorpage']; ?>/color/<?php echo $name; ?>/"
 						class="cpg-widget__color-link"
 						style="background-color: #<?php echo $code; ?>"
 						data-title="<?php echo str_replace('-', ' ', $name); ?>"
@@ -106,6 +88,20 @@ class CPG_Widget extends WP_Widget {
 	    }
     }
 
+}
+
+
+
+function cpg_shortcode_is_present($shortcode = '') {
+    $post_to_check = get_post(get_the_ID());
+    $found = false;
+    if (!$shortcode) {
+        return $found;
+    }
+    if ( stripos($post_to_check->post_content, '[' . $shortcode) !== false ) {
+        $found = true;
+    }
+    return $found;
 }
 
 // Register and load the widget
