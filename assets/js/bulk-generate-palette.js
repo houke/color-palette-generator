@@ -42,6 +42,7 @@ jQuery(document).on('ready', function() {
 				url: ajaxurl,
 	         	type: 'post',
 	         	dataType: 'JSON',
+	         	timeout: 30000,
 	         	data: {
 					action: 'cpg_bulk_add_palette',
 	         		dominant: colorThiefOutput.dominant,

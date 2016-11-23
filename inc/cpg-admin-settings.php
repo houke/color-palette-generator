@@ -282,7 +282,7 @@ function cpg_settings_page(){
 function cpg_register_taxonomies(){
 
     $args = array(
-        'public' => true,
+        'public' => false,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false,
         'hierarchical' => true
