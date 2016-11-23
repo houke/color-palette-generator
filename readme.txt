@@ -2,7 +2,7 @@
 Contributors: houkedekwant
 Donate link: http://nl.linkedin.com/in/houkedekwant
 Tags: color palette, color palette generator, image, images, color, colour, colour palette, palette, attachments
-Requires at least: 2.9
+Requires at least: 3.5
 Tested up to: 4.6.1
 Stable tag: trunk
 License: GPL2

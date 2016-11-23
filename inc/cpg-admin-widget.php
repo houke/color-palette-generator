@@ -90,8 +90,6 @@ class CPG_Widget extends WP_Widget {
 
 }
 
-
-
 function cpg_shortcode_is_present($shortcode = '') {
     $post_to_check = get_post(get_the_ID());
     $found = false;

@@ -47,14 +47,6 @@ function cpg_register_settings() {
 		'cpg_settings_page',
 		'cpg_options'
 	);
-	// add_settings_field(
-	// 	'cpg_process_on_upload',
-	// 	'Automatically generate when uploaded?',
-	// 	'cpg_create_field_process_on_upload',
-	// 	'cpg_settings_page',
-	// 	'cpg_options',
-	// 	array('class' => 'disabled')
-	// );
 }
 
 function cpg_section_text() {
@@ -73,10 +65,6 @@ function cpg_create_field_show_on_attachment() {
 	$checked = isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ? 'checked' : '';
 
 	echo '<input id="cpg_show_on_attachment" name="cpg_options[show_on_attachment]" type="checkbox" value="true" '.$checked.'/>';
-}
-
-function cpg_create_field_process_on_upload() {
-	echo '<input id="cpg_process_on_upload" name="cpg_options[process_on_upload]" type="checkbox" value="true" disabled/>';
 }
 
 //Add palette options to image insert
