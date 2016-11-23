@@ -15,8 +15,15 @@ class PKRoundColor {
     	$this->searchcolors = cpg_return_colors();
     	$this->baseColors = array();
        	foreach ($this->searchcolors as $name => $code) {
+       		array_push( $this->baseColors, cpg_return_tints($name));
 	   		array_push( $this->baseColors, $code );
 	    }
+
+	    $flattened_array = [];
+		array_walk_recursive($this->baseColors, function ( $item ) use(&$flattened_array ){
+             $flattened_array[] = $item;
+     	});
+     	$this->baseColors = $flattened_array;
    	}
 
     public function getBaseColors(){
@@ -61,7 +68,9 @@ class PKRoundColor {
             }
             $minValue = min(array_keys($distinction));
             $index = $distinction[$minValue];
-            return '#'.$this->baseColors[$index];
+            $closestColor = $this->baseColors[$index];
+            $closestColor = cpg_return_tints($closestColor);
+            return '#'.$closestColor;
         }
     }
 

@@ -49,7 +49,7 @@
     }
 
     //Color array used for filtering
-    function cpg_return_colors(){
+    function cpg_return_colors($name = false){
 
 		$colors = array(
 	        'red' =>		'f44336',
@@ -74,8 +74,62 @@
 	        'white' =>		'ffffff'
 	    );
 
+		if($name){
+    		return $colors[$name];
+		}else{
+    		return $colors;
+		}
+	}
 
-    	return $colors;
+	function cpg_return_tints($color){
+		$colors = array(
+			'red' 			=> array('ffcdd2', 'ef9a9a', 'e57373', 'ef5350', 'e53935', 'd32f2f', 'c62828', 'b71c1c'),
+        	'pink' 			=> array('f8bbd0', 'f48fb1', 'f06292', 'ec407a', 'd81b60', 'c2185b', 'aD1457', '880e4f'),
+	        'purple' 		=> array('e1bee7', 'ce93D8', 'ba68c8', 'ab47bc', '8e24aa', '7b1fa2', '6a1b9a', '4a148c'),
+        	'deep-purple' 	=> array('d1c4e9', 'b39ddb', '9575cd', '7e57c2', '5e35b1', '512da8', '4527a0', '311b92'),
+       	 	'indigo' 		=> array('c5cae9', '9fa8da', '7986cb', '5c6bc0', '3949ab', '303f9f', '283593', '1a237e'),
+        	'blue'			=> array('bbdefb', '90caf9', '64b5f6', '42a5f5', '1e88e5', '1976d2', '1565c0', '0d47a1'),
+        	'cyan' 			=> array('b2ebf2', '80deea', '4dd0e1', '26c6da', '00acc1', '0097a7', '00838f', '006064'),
+	        'teal' 			=> array('b2dfdb', '80cbc4', '4db6ac', '26a69a', '00897b', '00796b', '00695c', '004d40'),
+	        'green'			=> array('c8e6c9', 'a5d6a7', '81c784', '66bb6a', '43a047', '388e3c', '2e7d32', '1b5e20'),
+	        'light-green'	=> array('dcedc8', 'c5e1a5', 'aed581', '9ccc65', '7cb342', '689f38', '558b2f', '33691e'),
+	        'lime'			=> array('f0f4c3', 'e6ee9c', 'dce775', 'd4e157', 'c0ca33', 'afb42b', '9e9d24', '827717'),
+	        'yellow'		=> array('fff9c4', 'fff59d', 'fff176', 'ffee58', 'fdd835', 'fbc02d', 'f9a825', 'f57f17'),
+	        'amber' 		=> array('ffecb3', 'ffe082', 'ffd54f', 'ffca28', 'ffb300', 'ffa000', 'ff8f00', 'ff6f00'),
+	        'orange'		=> array('ffe0b2', 'ffcc80', 'ffb74d', 'ffa726', 'fb8c00', 'f57c00', 'ef6c00', 'e65100'),
+	        'deep-orange'	=> array('ffccbc', 'ffab91', 'ff8a65', 'ff7043', 'f4511e', 'e64a19', 'd84315', 'bf360c'),
+	        'brown' 		=> array('d7ccc8', 'bcaaa4', 'a1887f', '8d6e63', '6d4c41', '5d4037', '4e342e', '3e2723'),
+	        'grey'			=> array('f5f5f5', 'eeeeee', 'e0e0e0', 'bdbdbd', '757575', '616161', '424242', '212121'),
+	        'blue-grey'		=> array('cfd8dc', 'b0bec5', '90a4ae', '78909c', '546e7a', '455a64', '37474f', '263238'),
+	        'black' 		=> array(),
+	        'white'			=> array('ffebee', 'fce4ec', 'f3e5f5', 'ede7f6', 'e8eAf6', 'e3f2fd', 'e1f5fe', 'e0f7fA', 'e0f2f1', 'e8f5e9', 'f1f8e9', 'f9fbe7', 'fffde7', 'fff8e1', 'fff3e0', 'fbe9e7', 'efebe9', 'fAfAfA', 'eceff1')
+        );
+
+		if( array_key_exists($color, $colors) ){
+	    	return $colors[$color];
+	    }else{
+	        foreach ($colors as $i=>$c) {
+	        	if( in_array($color, $c) ){
+	        		return cpg_return_colors($i);
+	        		break;
+	        	}
+	        }
+    	}
+	}
+
+	function searchItemsByKey($array, $key){
+	   $results = array();
+
+	  if (is_array($array))
+	  {
+	    if (isset($array[$key]) && key($array)==$key)
+	        $results[] = $array[$key];
+
+	    foreach ($array as $sub_array)
+	        $results = array_merge($results, searchItemsByKey($sub_array, $key));
+	  }
+
+	 return  $results;
 	}
 
 	//Show # of images with a palette
