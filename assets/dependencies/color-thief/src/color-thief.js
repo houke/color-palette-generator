@@ -192,6 +192,9 @@ function componentToHex(c) {
     return hex.length == 1 ? "0" + hex : hex;
 }
 function rgba2hex(r, g, b) {
+	r = r > 255 ? 255 : r;
+	b = b > 255 ? 255 : b;
+	g = g > 255 ? 255 : g;
     return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 

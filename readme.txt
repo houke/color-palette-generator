@@ -23,6 +23,8 @@ This plugin is ideal for blog owners who like to do something more with their im
 * Allows configuration of number of unique colors per image
 * Allows configuration of auto appending palettes on attachment pages
 * See stats of generated palettes
+* Filter attachments by color
+* Add color search widget to your sidebar
 
 = Developers =
 If you don't like the way the plugin outputs the palettes, or you want to create custom color queries yourself, use the wordpress taxonomy functions. There are 2 new taxonomies added when the plugin is activated: `cpg_dominant_color` and `cpg_palette`. The first one holds one color per image, the main color. The second one holds the palette, and the number of colors is based on what the site owner has entered (default = 10).
@@ -52,21 +54,24 @@ Manual Installation:
 1. The Color palette generator settings page
 2. A new media library column will be available
 3. When inserting images into your content, new options will be available
-4. The palette in use
+4. Add a widget to your sidebar
+5. The palette in use
 
 = TODO =
 
 * Make browser compatible (Promises don't work in IE)
-* Add option to show/ hide dominant color by default
-* Include color search functions
-* Add color search query var (or offer a custom page template)
 * Add developer functions
 * Rewrite code to use PHP Classes
-* Create smarter function for inserting palettes in post content (shortcodes stop working when plugin is deactivated).
+* Generate palette on upload
 
 == Upgrade Notice ==
 
 == Changelog ==
 
+= 0.8 =
+
+* Beta release
+
 = 0.7 =
+
 * Beta release
