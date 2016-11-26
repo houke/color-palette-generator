@@ -87,7 +87,7 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 		    wp_register_script(
 		    	'cpg-bulk-generate-palette',
 		    	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
-		    	array( 'jquery', 'cpg-color-thief', 'cpg-admin-functions' )
+		    	array( 'jquery', 'wp-color-picker', 'cpg-color-thief', 'cpg-admin-functions' )
 			);
 		    wp_enqueue_script( 'cpg-bulk-generate-palette' );
 
@@ -103,6 +103,9 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 		    	plugins_url( 'assets/css/admin-settings-page-styles.css', dirname(__FILE__) )
 			);
 		    wp_enqueue_style( 'cpg-generate-palette-settings-page-css' );
+
+		    wp_enqueue_style( 'wp-color-picker' );
+
 			break;
 
 		case 'post.php':

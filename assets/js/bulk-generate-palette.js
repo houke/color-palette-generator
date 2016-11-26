@@ -12,6 +12,38 @@ jQuery(document).on('ready', function() {
 		cpg_CreateImg(src, params.post_id, params._wpnonce, params.colors);
 	});
 
+	jQuery(document).on('click', '[data-add-color]', function(e){
+		e.preventDefault();
+		jQuery(this).parents('td').find('.cpg-color-table__colors').append('<div class="cpg-color-table__div"><input type="text" value="" class="cpg-color-picker"/><button class="cpg-delete-color">&times;</button></div>');
+		//jQuery('.cpg-color-table__div > .cpg-color-picker').wpColorPicker();
+	});
+
+	jQuery(document).on('click', '.cpg-delete-color', function(e){
+		e.preventDefault();
+		jQuery(this).parents('.cpg-color-table__div').remove();
+	});
+
+	jQuery(document).on('click', '.cpg-color-table__add-row', function(e){
+		e.preventDefault();
+		jQuery('.cpg-color-table tbody').append('<tr>\
+				<td>\
+					<input type="text"class="cpg-color-picker"/><br/>\
+					<a href="#">Edit</a>\
+					<a href="#">Trash</a>\
+				</td>\
+				<td>\
+					<input type="text" value="" placeholder="Color name" />\
+				</td>\
+				<td>\
+					<div class="cpg-color-table__colors">\
+					</div>\
+					<div class="cpg-color-table__div"><button class="button tiny" data-add-color>Add color tint</button></div>\
+				</td>\
+			</tr>');
+	})
+
+	//jQuery('.cpg-color-picker').wpColorPicker();
+
 	function cpg_CreateImg(src, id, nonce, colors){
 		var img = new Image;
 		img.src = src;

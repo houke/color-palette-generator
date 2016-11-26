@@ -47,6 +47,13 @@ function cpg_register_settings() {
 		'cpg_settings_page',
 		'cpg_options'
 	);
+	add_settings_field(
+		'cpg_edit_colors',
+		'Create your own color filters?',
+		'cpg_create_field_color_filter',
+		'cpg_settings_page',
+		'cpg_options'
+	);
 }
 
 function cpg_section_text() {
@@ -65,6 +72,14 @@ function cpg_create_field_show_on_attachment() {
 	$checked = isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ? 'checked' : '';
 
 	echo '<input id="cpg_show_on_attachment" name="cpg_options[show_on_attachment]" type="checkbox" value="true" '.$checked.'/>';
+}
+
+function cpg_create_field_color_filter() {
+	$options = get_option('cpg_options');
+	$checked = isset( $options['edit_colors'] ) && $options['edit_colors'] == 'true' ? 'checked' : '';
+
+	echo '<label><input id="cpg_edit_colors" name="cpg_options[edit_colors]" type="checkbox" value="true" '.$checked.'/>
+	<small>Only check this if you know what you\'re doing</small></label>';
 }
 
 //Add palette options to image insert
@@ -274,6 +289,61 @@ function cpg_settings_page(){
 			</div>
 		</div>
 		<?php } ?>
+	</div>
+	<div class="clear"></div>
+	<div class="wrap cpg-wrap">
+		<div class="postbox">
+			<table class="cpg-color-table">
+				<thead>
+					<tr>
+						<th>Color</th>
+						<th>Color name</th>
+						<th>Color tints</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<td colspan="3">
+							<button class="button button-primary cpg-color-table__add-row">Add color row</button>
+						</td>
+					</tr>
+				</tfoot>
+				<tbody>
+					<?php
+						$maincolors = cpg_return_colors();
+						foreach ($maincolors as $name => $code) {
+							$tints = cpg_return_tints($name);
+							$code = '#'.$code;
+							$name = ucwords(str_replace('-', ' ', $name));
+					?>
+						<tr>
+							<td>
+								<input type="text" style="background-color: <?php echo $code; ?>" value="<?php echo $code; ?>" class="cpg-color-picker" disabled/>
+								<div class="row-actions">
+									<span class="edit"><a href="#">Edit</a> | </span>
+									<span class="trash"><a href="#">Trash</a> | </span>
+									<span class="edit"><a href="#">Reset to default</a></span>
+								</div>
+							</td>
+							<td><input type="text" value="<?php echo $name; ?>"  disabled/></td>
+							<td>
+								<div class="cpg-color-table__colors">
+								<?php foreach ($tints as $tint) { $tint = '#'.$tint; ?>
+									<div class="cpg-color-table__div">
+										<input type="text" style="background-color: <?php echo $tint; ?>"  value="<?php echo $tint; ?>" class="cpg-color-picker" disabled/>
+										<button class="cpg-delete-color">&times;</button>
+									</div>
+								<?php } ?>
+								</div>
+								<div class="cpg-color-table__div">
+									<button class="button tiny" data-add-color  disabled>Add color tint</button>
+								</div>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<?php
 }

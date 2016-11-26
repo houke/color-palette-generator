@@ -141,3 +141,88 @@
 	margin: 0 0 12px;
 	padding: 8px 12px;
 }
+
+.cpg-color-table{
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.cpg-color-table tfoot{
+	border-top: 1px solid #eee;
+}
+
+.cpg-color-table th{
+	text-align: left;
+	width: 150px;
+	padding: 8px 12px;
+	border-bottom: 1px solid #eee;
+}
+
+.cpg-color-table th:last-child{
+	width: auto;
+}
+
+.cpg-color-table td{
+	padding: 8px 12px;
+	vertical-align: top;
+}
+
+.cpg-color-table td span{
+	display: block;
+	width: 50px;
+	height: 15px;
+}
+
+.cpg-color-table td span.edit,
+.cpg-color-table td span.trash{
+	display: inline-block;
+	width: auto;
+}
+
+
+.cpg-color-table td span.wp-picker-input-wrap{
+	display: none;
+}
+
+.cpg-color-table td input:focus{
+	background-color: #fff!important;
+}
+
+.cpg-color-table__div{
+	float: left;
+	padding-right: 5px;
+	padding-bottom: 5px;
+    vertical-align: top;
+    position: relative;
+}
+.cpg-color-table__div .wp-picker-holder{
+	position: absolute;
+	z-index: 9;
+	box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
+.cpg-color-table__div .wp-picker-container{
+	display: block;
+	padding-right: 10px;
+}
+.cpg-color-table__div .wp-picker-container .iris-picker{
+	margin-top: 0;
+}
+
+.cpg-delete-color{
+    vertical-align: top;
+    margin-left: -10px;
+    border: none;
+    background: transparent;
+    position: relative;
+    z-index: 2;
+    outline: none;
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    opacity: 0;
+}
+
+.cpg-color-table__div:hover .cpg-delete-color{
+	opacity: 1;
+}
