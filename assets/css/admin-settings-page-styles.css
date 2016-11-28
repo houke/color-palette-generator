@@ -147,6 +147,10 @@
 	border-collapse: collapse;
 }
 
+.cpg-color-table tbody>:nth-child(odd){
+    background-color: #f9f9f9;
+}
+
 .cpg-color-table tfoot{
 	border-top: 1px solid #eee;
 }
@@ -177,11 +181,6 @@
 .cpg-color-table td span.trash{
 	display: inline-block;
 	width: auto;
-}
-
-
-.cpg-color-table td span.wp-picker-input-wrap{
-	display: none;
 }
 
 .cpg-color-table td input:focus{

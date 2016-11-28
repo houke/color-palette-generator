@@ -87,7 +87,7 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 		    wp_register_script(
 		    	'cpg-bulk-generate-palette',
 		    	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
-		    	array( 'jquery', 'wp-color-picker', 'cpg-color-thief', 'cpg-admin-functions' )
+		    	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' )
 			);
 		    wp_enqueue_script( 'cpg-bulk-generate-palette' );
 
