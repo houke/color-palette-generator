@@ -1,20 +1,20 @@
 function cpg_showErrors(jqXHR, exception){
-	var msg = "Something went wrong";
+	var msg = cpg.error;
 
 	if (jqXHR.status === 0) {
-		msg = 'Not connected.\n Verify Network.';
+		msg = cpg.error_0;
 	} else if (jqXHR.status == 404) {
-		msg = 'Requested page not found. [404]';
+		msg = cpg.error_1;
 	} else if (jqXHR.status == 500) {
-		msg = 'Internal Server Error [500].';
+		msg = cpg.error_2;
 	} else if (exception === 'parsererror') {
-		msg = 'Requested JSON parse failed.';
+		msg = cpg.error_3;
 	} else if (exception === 'timeout') {
-		msg = 'Time out error.';
+		msg = cpg.error_4;
 	} else if (exception === 'abort') {
-		msg = 'Ajax request aborted.';
+		msg = cpg.error_5;
 	} else {
-		msg = 'Uncaught Error.\n' + jqXHR.responseText;
+		msg = cpg.error_x + '\n' + jqXHR.responseText;
 	}
 	return msg;
 }

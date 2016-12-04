@@ -5,7 +5,7 @@ jQuery(document).on('ready', function() {
 		e.preventDefault();
 		var elem = jQuery(this);
 		if(!elem.hasClass('disabled')){
-			elem.text(cpg.generating + '...').attr('disabled', 'disabled').addClass('disabled');
+			elem.text(cpg.generating + '...').attr('disabled', 'disabled').addClass('disabled').after('<br/><small>'+cpg.keep_open+'</small>');
 		}
 		var src = elem.data('src');
 		var params = cpg_parseParams( elem.attr('href').split('?')[1] );
@@ -16,9 +16,8 @@ jQuery(document).on('ready', function() {
 		e.preventDefault();
 		var elem = jQuery(this);
 		var params = cpg_parseParams( elem.attr('href').split('?')[1] );
-		jQuery('[data-with]').html( 0 );
-		jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
-		jQuery('.cpg__inside--generate').html('<p>'+cpg.deleting+'...</p>');
+		jQuery('[data-with]').html( '~' );
+		jQuery('.cpg__inside--generate').html('<p>'+cpg.deleting+'... <br/><small>'+cpg.keep_open+'</small></p>');
 		jQuery.ajax({
 			url: ajaxurl,
          	type: 'post',
@@ -30,7 +29,9 @@ jQuery(document).on('ready', function() {
 				regenerate: params.regenerate
          	},
          	success: function(response) {
-     			jQuery('.cpg__inside--generate').html('<p>'+cpg.regenerating+'...</p>');
+         		jQuery('.cpg__inside--generate').html('<p>'+cpg.regenerating+'... <br/><small>'+cpg.keep_open+'</small></p>');
+				jQuery('[data-with]').html( 0 );
+				jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
          		if(response.more){
          			cpg_CreateImg(response.src, response.id, response.nonce);
          		}else{
@@ -45,14 +46,6 @@ jQuery(document).on('ready', function() {
         });
 	});
 
-	jQuery('.cpg-color-picker').iris({
-		mode: 'rgb',
-		width: 158,
-		change: function(event, ui) {
-	        jQuery(event.target).css( 'background-color', ui.color.toString());
-	    }
-	});
-
 	jQuery(document).on('click', '[data-add-color]', function(e){
 		e.preventDefault();
 		var name_in_array = jQuery(this).parents('tr').find('td:nth-child(2) input').val();
@@ -64,14 +57,6 @@ jQuery(document).on('ready', function() {
 				<input type="text" value="" class="cpg-color-picker" name="cpg_options[color_table]['+name_in_array+'][tints][]" />\
 				<button class="cpg-delete-color">&times;</button>\
 			</div>');
-
-		jQuery('.cpg-color-table__div--added .cpg-color-picker').iris({
-			mode: 'rgb',
-			width: 158,
-			change: function(event, ui) {
-		        jQuery(event.target).css( 'background-color', ui.color.toString());
-		    }
-		});
 	});
 
 	jQuery(document).on('click', '.cpg-delete-color', function(e){
@@ -85,7 +70,7 @@ jQuery(document).on('ready', function() {
 	});
 
 	jQuery(document).on('click', function(e){
-		if( !jQuery(e.target).parent().hasClass('cpg-color-picker-iris') ){
+		if( jQuery('.cpg-color-picker-iris').length > 0 && !jQuery(e.target).parent().hasClass('cpg-color-picker-iris') ){
 			jQuery('.cpg-color-picker-iris .cpg-color-picker').iris('hide');
 			jQuery('.cpg-color-picker-iris').removeClass('cpg-color-picker-iris');
 		}
@@ -95,7 +80,19 @@ jQuery(document).on('ready', function() {
 		e.preventDefault();
 		jQuery('.cpg-color-picker-iris .cpg-color-picker').iris('hide');
 		jQuery(this).parent('.cpg-color__main-color, .cpg-color-table__div').addClass('cpg-color-picker-iris');
-		jQuery(this).iris('show');
+		if(jQuery(this).hasClass('iris-active')){
+			jQuery(this).iris('show');
+		}else{
+			var color = jQuery(this).val() == '' ? jQuery(this).parents('tr').find('.cpg-color__main-color input').val() : jQuery(this).val();
+			jQuery(this).addClass('iris-active').iris({
+				color: color,
+				mode: 'rgb',
+				width: 158,
+				change: function(event, ui) {
+			        jQuery(event.target).css( 'background-color', ui.color.toString());
+			    }
+			});
+		}
 	});
 
 	jQuery(document).on('click', '.cpg-color-table__add-row', function(e){

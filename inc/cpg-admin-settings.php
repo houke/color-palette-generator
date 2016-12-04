@@ -246,6 +246,20 @@ function cpg_settings_page(){
 							</p>
 						</div>
 					</div>
+
+					<div id="cpg-stats" class="postbox cpg-postbox">
+						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcode', 'cpg' ); ?></h2>
+						<div class="inside cpg__inside cpg__inside--btn">
+							<p><?php _e('To show individual images within a post, use the following shortcode (or enter the required options while adding images)', 'cpg'); ?>: <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
+							<ul>
+								<li><?php _e('attachment: the id of the image you want to show', 'cpg'); ?></li>
+								<li><?php _e('dominant: whether you want to show the dominant color or not', 'cpg'); ?></li>
+								<li><?php _e('colors: the number of colors you want to show', 'cpg'); ?></li>
+								<li><?php _e('size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)', 'cpg'); ?></li>
+							</ul>
+						</div>
+					</div>
+
 					<form method="post" action="options.php" class="postbox cpg-postbox">
 						<?php
 							settings_fields( 'cpg_options' );
@@ -264,6 +278,7 @@ function cpg_settings_page(){
 									<tr>
 										<td colspan="3">
 											<button class="button cpg-color-table__add-row"><?php _e('Add color row', 'cpg'); ?></button>
+											<a href="#" data-reset><?php _e('Reset to default', 'cpg'); ?></a>
 										</td>
 									</tr>
 								</tfoot>
@@ -306,19 +321,6 @@ function cpg_settings_page(){
 						</div>
 						<?php submit_button(); ?>
 					</form>
-
-					<div id="cpg-stats" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcode', 'cpg' ); ?></h2>
-						<div class="inside cpg__inside cpg__inside--btn">
-							<p><?php _e('To show individual images within a post, use the following shortcode (or enter the required options while adding images)', 'cpg'); ?>: <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
-							<ul>
-								<li><?php _e('attachment: the id of the image you want to show', 'cpg'); ?></li>
-								<li><?php _e('dominant: whether you want to show the dominant color or not', 'cpg'); ?></li>
-								<li><?php _e('colors: the number of colors you want to show', 'cpg'); ?></li>
-								<li><?php _e('size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)', 'cpg'); ?></li>
-							</ul>
-						</div>
-					</div>
 				</div>
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="cpg-stats" class="postbox cpg-postbox">

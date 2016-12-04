@@ -25,9 +25,10 @@ This plugin is ideal for blog owners who like to do something more with their im
 * See stats of generated palettes
 * Filter attachments by color
 * Add color search widget to your sidebar
+* Use a shortcode to show an image with a palette in your content.
 
 = Developers =
-If you don't like the way the plugin outputs the palettes, or you want to create custom color queries yourself, use the wordpress taxonomy functions. There are 2 new taxonomies added when the plugin is activated: `cpg_dominant_color` and `cpg_palette`. The first one holds one color per image, the main color. The second one holds the palette, and the number of colors is based on what the site owner has entered (default = 10).
+If you don't like the way the plugin outputs the palettes, or you want to create custom color queries yourself, use the wordpress taxonomy functions. There are 2 new taxonomies added when the plugin is activated: `cpg_dominant_color` and `cpg_palette`. The first one holds one color per image, the dominant color (this color is used to link the image to one of the main colors used in the color search functions). The second one holds the palette, and the number of colors is based on what the site owner has entered (default = 10).
 
 = Special thanks =
 * Lokesh Dhakar, for the [color thief library](https://github.com/lokesh/color-thief)
@@ -60,13 +61,16 @@ Manual Installation:
 = TODO =
 
 * Make browser compatible (Promises don't work in IE)
-* Add developer functions
-* Rewrite code to use PHP Classes
 * Generate palette on upload
+* Add developer functions
 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 0.9 =
+
+* Final beta release
 
 = 0.8 =
 

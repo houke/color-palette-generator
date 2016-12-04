@@ -55,7 +55,9 @@
 
     	$colors = array();
 		foreach ($searchcolors as $name => $code) {
-	    	$colors[$name] = str_replace('#', '', $code['code']);
+			if( isset( $code['code'] ) ){
+	    		$colors[$name] = str_replace('#', '', $code['code']);
+	    	}
 	    }
 
 		if($key){
@@ -71,7 +73,8 @@
 
     	$colors = array();
 		foreach ($searchcolors as $name => $code) {
-	    	$colors[$name] = str_replace('#', '', $code['tints']);
+			$tints = isset( $code['tints'] ) ? $code['tints'] : array();
+	    	$colors[$name] = str_replace('#', '', $tints);
 	    }
 
 		if( array_key_exists($color, $colors) ){

@@ -49,6 +49,19 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 			);
 		    wp_enqueue_script( 'cpg-admin-functions' );
 
+		    wp_localize_script( 'cpg-admin-functions', 'cpg',
+				array(
+					'error' => __( 'Something went wrong', 'cpg' ),
+					'error_0' => __('Not connected, please verify your network', 'cpg'),
+					'error_1' => __('Requested page not found. (404)', 'cpg'),
+					'error_2' => __( 'Internal Server Error (500)', 'cpg' ),
+					'error_3' => __( 'Requested JSON parse failed', 'cpg' ),
+					'error_4' => __( 'Time out error', 'cpg' ),
+					'error_5' => __( 'Ajax request aborted', 'cpg' ),
+					'error_x' => __( 'Uncaught error', 'cpg' ),
+				)
+			);
+
 		    wp_register_script(
 		    	'cpg-generate-palette',
 		    	plugins_url( 'assets/js/generate-palette.js', dirname(__FILE__) ),
@@ -98,7 +111,8 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 					'regenerating' => __('Regenerating', 'cpg'),
 					'done' => __( 'All images have a palette. Well done!', 'cpg' ),
 					'enter_value' => __('Please enter a name for this color row', 'cpg'),
-					'enter_value_placeholder' => __('Color name', 'cpg')
+					'enter_value_placeholder' => __('Color name', 'cpg'),
+					'keep_open' => __('Keep this page open until everything is done', 'cpg')
 				)
 			);
 
