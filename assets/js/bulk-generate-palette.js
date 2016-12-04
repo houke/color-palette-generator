@@ -9,7 +9,40 @@ jQuery(document).on('ready', function() {
 		}
 		var src = elem.data('src');
 		var params = cpg_parseParams( elem.attr('href').split('?')[1] );
-		cpg_CreateImg(src, params.post_id, params._wpnonce, params.colors);
+		cpg_CreateImg(src, params.post_id, params._wpnonce, params.colors, params.regenerate);
+	});
+
+	jQuery(document).on('click', '.cpg-button-bulk--regenerate', function(e){
+		e.preventDefault();
+		var elem = jQuery(this);
+		var params = cpg_parseParams( elem.attr('href').split('?')[1] );
+		jQuery('[data-with]').html( 0 );
+		jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
+		jQuery('.cpg__inside--generate').html('<p>'+cpg.deleting+'...</p>');
+		jQuery.ajax({
+			url: ajaxurl,
+         	type: 'post',
+         	dataType: 'JSON',
+         	timeout: 30000,
+         	data: {
+				action: 'cpg_bulk_add_palette',
+				nonce: params._wpnonce,
+				regenerate: params.regenerate
+         	},
+         	success: function(response) {
+     			jQuery('.cpg__inside--generate').html('<p>'+cpg.regenerating+'...</p>');
+         		if(response.more){
+         			cpg_CreateImg(response.src, response.id, response.nonce);
+         		}else{
+         			jQuery('.cpg__inside--btn').html(cpg.done);
+         			jQuery('.cpg-hndle small').remove();
+         		}
+         	},
+         	error: function (jqXHR, exception) {
+		        var msg = cpg_showErrors(jqXHR, exception);
+		        jQuery('.cpg__inside--btn').html(msg);
+		    },
+        });
 	});
 
 	jQuery('.cpg-color-picker').iris({
@@ -22,11 +55,13 @@ jQuery(document).on('ready', function() {
 
 	jQuery(document).on('click', '[data-add-color]', function(e){
 		e.preventDefault();
+		var name_in_array = jQuery(this).parents('tr').find('td:nth-child(2) input').val();
+		var name_in_array = name_in_array.replace(' ', '-').toLowerCase();
 		jQuery(this)
 			.parents('td')
 			.find('.cpg-color-table__colors')
 			.append('<div class="cpg-color-table__div cpg-color-table__div--added">\
-				<input type="text" value="" class="cpg-color-picker"/>\
+				<input type="text" value="" class="cpg-color-picker" name="cpg_options[color_table]['+name_in_array+'][tints][]" />\
 				<button class="cpg-delete-color">&times;</button>\
 			</div>');
 
@@ -59,53 +94,54 @@ jQuery(document).on('ready', function() {
 	jQuery(document).on('focus', '.cpg-color-picker', function(e){
 		e.preventDefault();
 		jQuery('.cpg-color-picker-iris .cpg-color-picker').iris('hide');
-		jQuery(this).parent('td, .cpg-color-table__div').addClass('cpg-color-picker-iris');
+		jQuery(this).parent('.cpg-color__main-color, .cpg-color-table__div').addClass('cpg-color-picker-iris');
 		jQuery(this).iris('show');
 	});
 
 	jQuery(document).on('click', '.cpg-color-table__add-row', function(e){
 		e.preventDefault();
-		jQuery('.cpg-color-table tbody').append('<tr>\
-			<td class="cpg-color-table__div--added">\
-				<input type="text"class="cpg-color-picker"/><br/>\
-				<div class="row-actions">\
-					<span class="trash"><a href="#">Trash</a></span>\
-				</div>\
-			</td>\
-			<td>\
-				<input type="text" value="" placeholder="Color name" />\
-			</td>\
-			<td>\
-				<div class="cpg-color-table__colors">\
-				</div>\
-				<div class="cpg-color-table__div"><button class="button tiny" data-add-color>Add color tint</button></div>\
-			</td>\
-		</tr>');
+		var new_color = prompt(cpg.enter_value, cpg.enter_value_placeholder);
+		var new_color_lower = new_color.replace(' ', '-').toLowerCase();
+		if (new_color != null) {
+			jQuery('.cpg-color-table tbody').append('<tr>\
+				<td class="cpg-color-table__div--added">\
+					<div class="cpg-color__main-color">\
+						<input type="text" class="cpg-color-picker" maxlength="7" name="cpg_options[color_table]['+new_color_lower+'][code]"/><br/>\
+					</div>\
+					<div class="row-actions">\
+						<span class="trash"><a href="#">Trash</a></span>\
+					</div>\
+				</td>\
+				<td>\
+					<input type="text" readonly="readonly" value="'+new_color+'" placeholder="Color name" name="cpg_options[color_table]['+new_color_lower+'][name]"/>\
+				</td>\
+				<td>\
+					<div class="cpg-color-table__colors">\
+					</div>\
+					<div class="cpg-color-table__div"><button class="button tiny" data-add-color>Add color tint</button></div>\
+				</td>\
+			</tr>');
 
-		jQuery('.cpg-color-table__div--added .cpg-color-picker').iris({
-			mode: 'rgb',
-			width: 158,
-			change: function(event, ui) {
-		        jQuery(event.target).css( 'background-color', ui.color.toString());
-		    }
-		});
+			jQuery('.cpg-color-table__div--added .cpg-color-picker').iris({
+				mode: 'rgb',
+				width: 158,
+				change: function(event, ui) {
+			        jQuery(event.target).css( 'background-color', ui.color.toString());
+			    }
+			});
+		}
 	});
 
-	jQuery(document).on('click', '[data-save-colors]', function(e){
-		e.preventDefault();
-		console.log(jQuery(this).parents('form').serialize());
-	})
-
-	function cpg_CreateImg(src, id, nonce, colors){
+	function cpg_CreateImg(src, id, nonce, colors, regenerate){
 		var img = new Image;
 		img.src = src;
 		img.onload = function(){
 		    cpg_colorThief = new ColorThief();
-		    var color = cpg_AddColorsForImage(img, id, nonce, colors);
+		    var color = cpg_AddColorsForImage(img, id, nonce, colors, regenerate);
 		};
 	}
 
-	function cpg_AddColorsForImage(image, id, nonce, colors) {
+	function cpg_AddColorsForImage(image, id, nonce, colors, regenerate) {
 		colorThiefOutput = {};
 
 		var color = new Promise(function(resolve, reject) {
@@ -132,7 +168,8 @@ jQuery(document).on('ready', function() {
 	         		dominant: colorThiefOutput.dominant,
 	         		palette: colorThiefOutput.palette,
 					id: id,
-					nonce: nonce
+					nonce: nonce,
+					regenerate: regenerate
 	         	},
 	         	success: function(response) {
 	         		if(response.more){
@@ -141,7 +178,11 @@ jQuery(document).on('ready', function() {
 	         			jQuery('.cpg__inside--btn').html(cpg.done);
 	         			jQuery('.cpg-hndle small').remove();
 	         		}
-         			jQuery('[data-with]').html( parseInt(jQuery('[data-with]').html()) + 1);
+	         		if(response.regenerate){
+	         			jQuery('[data-with]').html( 0 );
+	         		}else{
+	         			jQuery('[data-with]').html( parseInt(jQuery('[data-with]').html()) + 1);
+	         		}
          			jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
 	         	},
 	         	error: function (jqXHR, exception) {

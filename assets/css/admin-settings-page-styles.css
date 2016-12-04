@@ -121,6 +121,14 @@
 	vertical-align: top;
 }
 
+.cpg-postbox .cpg-color-table input+.iris-picker{
+	margin-top: 0;
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    top: 100%;
+}
+
 .cpg-postbox .form-table tr.disabled{
 	pointer-events: none;
 }
@@ -128,13 +136,6 @@
 .cpg-postbox .form-table tr.disabled th{
 	opacity: 0.5;
 	position: relative;
-}
-
-.cpg-postbox .form-table tr.disabled th:after{
-	content: "Not yet available. Will only be available for pro accounts";
-	display: block;
-	font-size: 12px;
-	font-weight: 300;
 }
 
 .cpg-postbox .submit{
@@ -169,6 +170,11 @@
 .cpg-color-table td{
 	padding: 8px 12px;
 	vertical-align: top;
+}
+
+.cpg-color-table td .cpg-color__main-color{
+	position: relative;
+	padding-bottom: 4px;
 }
 
 .cpg-color-table td span{
@@ -224,4 +230,12 @@
 
 .cpg-color-table__div:hover .cpg-delete-color{
 	opacity: 1;
+}
+
+.cpg-wrap--hidden{
+	display: none;
+}
+
+.cpg-button-bulk--regenerate{
+	margin-left: 10px;
 }

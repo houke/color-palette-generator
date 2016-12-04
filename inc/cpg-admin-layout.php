@@ -18,7 +18,8 @@ add_filter( 'manage_upload_sortable_columns', 'cpg_make_sortable_column' );
 //Add content to column
 function cpg_set_palette_column_content( $column_name, $post_id ) {
     if ( $column_name == 'cpg_dominant_color_column' ) {
-        if( $colors = get_the_terms( $post_id, 'cpg_dominant_color' ) ) {
+    	$colors = get_the_terms( $post_id, 'cpg_dominant_color' );
+        if( $colors ) {
         	$dominant = $colors[0];
         	$dominant = $dominant->name;
         	$palette = get_the_terms( $post_id, 'cpg_palette' );
@@ -34,7 +35,6 @@ add_action( 'manage_media_custom_column', 'cpg_set_palette_column_content', 10, 
 
 //Load scripts only when on media library
 function cpg_load_custom_wp_admin_scripts( $hook ) {
-
 	switch($hook){
 		case 'upload.php':
 			wp_register_script(
@@ -94,7 +94,11 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 			wp_localize_script( 'cpg-bulk-generate-palette', 'cpg',
 				array(
 					'generating' => __( 'Generating', 'cpg' ),
-					'done' => __( 'All images have a palette. Well done!', 'cpg' )
+					'deleting' => __('Deleting', 'cpg'),
+					'regenerating' => __('Regenerating', 'cpg'),
+					'done' => __( 'All images have a palette. Well done!', 'cpg' ),
+					'enter_value' => __('Please enter a name for this color row', 'cpg'),
+					'enter_value_placeholder' => __('Color name', 'cpg')
 				)
 			);
 

@@ -78,10 +78,10 @@ function cpg_create_field_color_filter() {
 	$options = get_option('cpg_options');
 	$checked = isset( $options['edit_colors'] ) && $options['edit_colors'] == 'true' ? 'checked' : '';
 
-	$substring = $options['edit_colors'] ? 'Scroll down to edit the color table' : 'Only check this if you know what you\'re doing';
+	$substring = $checked ? __('You can now edit the color table below. If you do this, all palettes need to be regenerated', 'cpg') : __('Only check this if you know what you\'re doing', 'cpg');
 
 	echo '<label><input id="cpg_edit_colors" name="cpg_options[edit_colors]" type="checkbox" value="true" '.$checked.'/>
-	<small>'.$substring.'</small></label>';
+	<small>'.$substring.'. <br/><a href="#" target="_blank">' . __('Read more about this option', 'cpg') . '</a></small></label>';
 }
 
 //Add palette options to image insert
@@ -203,11 +203,12 @@ function cpg_settings_page(){
 ?>
 	<div class="wrap">
 		<h1><?php _e("Color Palette Generator",'cpg'); ?></h1>
+		<?php settings_errors(); ?>
 		<?php if( isset( $_GET['action'] ) && $_GET['action'] != '' ){ //TODO make actions work without JS ?>
 		<p>
-			<?php _e('Something went wrong.', 'cpg'); ?>
+			<?php _e('Something went wrong. You probably ended here because of a javascript error.', 'cpg'); ?>
 			<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
-				<?php _e('Click here to retry.', 'cpg'); ?>
+				<?php _e('Click here to refresh.', 'cpg'); ?>
 			</a>
 		</p>
 		<?php }else{ ?>
@@ -227,34 +228,94 @@ function cpg_settings_page(){
 								</small>
 							<?php } ?>
 						</h2>
-						<div class="inside cpg__inside cpg__inside--btn">
-							<?php if( $total - $with == 0 ) { ?>
-							<p><?php _e( 'All images have a palette. Well done!', 'cpg' ); ?></p>
-							<?php } else { $img = get_attachment_without_colors(); ?>
-							<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&post_id='.$img['id'].'&_wpnonce=' . wp_create_nonce( 'cpg_bulk_generate_palette_'.$img['id'].'_nonce' ); ?>&colors=<?php echo $colors; ?>" class="button cpg-button-bulk" data-src="<?php echo $img['src']; ?>">
-									<?php _e( 'Generate palette for all images', 'cpg' ); ?>
-							</a>
-							<?php } ?>
+						<div class="inside cpg__inside cpg__inside--btn cpg__inside--generate">
+							<p>
+								<?php if( $total - $with == 0 ) { ?>
+									<?php _e( 'All images have a palette. Well done!', 'cpg' ); ?>
+								<?php } else { $img = get_attachment_without_colors(); ?>
+									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&post_id='.$img['id'].'&_wpnonce=' . wp_create_nonce( 'cpg_bulk_generate_palette_'.$img['id'].'_nonce' ); ?>&colors=<?php echo $colors; ?>&regenerate=false" class="button cpg-button-bulk" data-src="<?php echo $img['src']; ?>">
+											<?php _e( 'Generate palettes', 'cpg' ); ?>
+									</a>
+								<?php } ?>
+
+								<?php if( $with > 0 ) { ?>
+									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&_wpnonce=' . wp_create_nonce( 'cpg_bulk_regenerate_palette_nonce' ); ?>&regenerate=true" class="cpg-button-bulk--regenerate">
+											<?php _e( 'Regenerate palettes', 'cpg' ); ?>
+									</a>
+								<?php } ?>
+							</p>
 						</div>
 					</div>
-
 					<form method="post" action="options.php" class="postbox cpg-postbox">
 						<?php
 							settings_fields( 'cpg_options' );
 							do_settings_sections( 'cpg_settings_page' );
-							submit_button();
 						?>
+						<div class="cpg-wrap cpg-wrap--<?php echo $edit_colors ? 'visible' : 'hidden'; ?>">
+							<table class="cpg-color-table">
+								<thead>
+									<tr>
+										<th><?php _e('Color', 'cpg'); ?></th>
+										<th><?php _e('Color name', 'cpg'); ?></th>
+										<th><?php _e('Color tints', 'cpg'); ?></th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<td colspan="3">
+											<button class="button cpg-color-table__add-row"><?php _e('Add color row', 'cpg'); ?></button>
+										</td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<?php
+										$maincolors = cpg_return_colors();
+										foreach ($maincolors as $name => $code) {
+											$tints = cpg_return_tints($name);
+											$code = '#'.$code;
+											$name = ucwords(str_replace('-', ' ', $name));
+											$name_in_array = strtolower(str_replace(' ', '-', $name));
+									?>
+										<tr>
+											<td>
+												<div class="cpg-color__main-color">
+													<input type="text" maxlength="7" style="background-color: <?php echo $code; ?>" value="<?php echo $code; ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo $name_in_array; ?>][code]"/>
+												</div>
+												<div class="row-actions">
+													<span class="trash"><a href="#"><?php _e('Trash row', 'cpg'); ?></a></span>
+												</div>
+											</td>
+											<td><input type="text" value="<?php echo $name; ?>" name="cpg_options[color_table][<?php echo $name_in_array; ?>][name]"/></td>
+											<td>
+												<div class="cpg-color-table__colors">
+												<?php foreach ($tints as $tint) { $tint = '#'.$tint; ?>
+													<div class="cpg-color-table__div">
+														<input type="text" style="background-color: <?php echo $tint; ?>"  value="<?php echo $tint; ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo $name_in_array; ?>][tints][]" />
+														<button class="cpg-delete-color">&times;</button>
+													</div>
+												<?php } ?>
+												</div>
+												<div class="cpg-color-table__div">
+													<button class="button tiny" data-add-color ><?php _e('Add color tint', 'cpg'); ?></button>
+												</div>
+											</td>
+										</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+						<?php submit_button(); ?>
 					</form>
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcode', 'cpg' ); ?></h2>
 						<div class="inside cpg__inside cpg__inside--btn">
-							<p>To show individual images within a post, use the following shortcode (or enter the required options while adding images): <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
+							<p><?php _e('To show individual images within a post, use the following shortcode (or enter the required options while adding images)', 'cpg'); ?>: <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
 							<ul>
-								<li>attachment: the id of the image you want to show</li>
-								<li>dominant: whether you want to show the dominant color or not</li>
-								<li>colors: the number of colors you want to show</li>
-								<li>size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)</li>
+								<li><?php _e('attachment: the id of the image you want to show', 'cpg'); ?></li>
+								<li><?php _e('dominant: whether you want to show the dominant color or not', 'cpg'); ?></li>
+								<li><?php _e('colors: the number of colors you want to show', 'cpg'); ?></li>
+								<li><?php _e('size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)', 'cpg'); ?></li>
 							</ul>
 						</div>
 					</div>
@@ -294,70 +355,15 @@ function cpg_settings_page(){
 		<?php } ?>
 	</div>
 	<div class="clear"></div>
-	<?php if($edit_colors){ ?>
-	<div class="wrap cpg-wrap">
-		<form class="postbox" method="post">
-			<table class="cpg-color-table">
-				<thead>
-					<tr>
-						<th>Color</th>
-						<th>Color name</th>
-						<th>Color tints</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="3">
-							<button class="button cpg-color-table__add-row">Add color row</button>
-							<button type="submit" class="button button-primary" data-save-colors>Save colors</button>
-						</td>
-					</tr>
-				</tfoot>
-				<tbody>
-					<?php
-						$maincolors = cpg_return_colors();
-						foreach ($maincolors as $name => $code) {
-							$tints = cpg_return_tints($name);
-							$code = '#'.$code;
-							$name = ucwords(str_replace('-', ' ', $name));
-							$name_in_array = strtolower(str_replace(' ', '-', $name));
-					?>
-						<tr>
-							<td>
-								<input type="text" maxlength="7" style="background-color: <?php echo $code; ?>" value="<?php echo $code; ?>" class="cpg-color-picker" name="color[<?php echo $name_in_array; ?>][code]"/>
-								<div class="row-actions">
-									<span class="trash"><a href="#">Trash</a></span>
-								</div>
-							</td>
-							<td><input type="text" value="<?php echo $name; ?>" name="color[<?php echo $name_in_array; ?>][name]"/></td>
-							<td>
-								<div class="cpg-color-table__colors">
-								<?php foreach ($tints as $tint) { $tint = '#'.$tint; ?>
-									<div class="cpg-color-table__div">
-										<input type="text" style="background-color: <?php echo $tint; ?>"  value="<?php echo $tint; ?>" class="cpg-color-picker" name="color[<?php echo $name_in_array; ?>][tints]" />
-										<button class="cpg-delete-color">&times;</button>
-									</div>
-								<?php } ?>
-								</div>
-								<div class="cpg-color-table__div">
-									<button class="button tiny" data-add-color >Add color tint</button>
-								</div>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</form>
-	</div>
 	<?php
-	}
 }
-
-//Setup taxonomies used to store colors
-function cpg_register_taxonomies(){
+//Setup settings & taxonomies used to store colors
+function cpg_register_default_settings(){
+	//set default colors for filtering
+	add_option( 'cpg_options', cpg_default_color_table() );
 
     $args = array(
-        'public' => false,
+        'public' => true,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false,
         'hierarchical' => true
@@ -372,13 +378,9 @@ function cpg_register_taxonomies(){
     );
     register_taxonomy( 'cpg_palette', array( 'attachment' ), $args_palette );
 
-    $searchcolors = cpg_return_colors();
-
-    foreach ($searchcolors as $name => $code) {
-   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
-    }
+	cpg_setup_taxonomies();
 }
-add_action( 'init', 'cpg_register_taxonomies' );
+add_action( 'init', 'cpg_register_default_settings' );
 
 function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 
@@ -444,7 +446,7 @@ add_shortcode( 'colorpalette', 'cpg_colorpalette_shortcode' );
 
 //Register taxonomies on install
 function cpg_install(){
-    cpg_register_taxonomies();
+    cpg_register_default_settings();
     flush_rewrite_rules();
 }
 register_activation_hook( CPG_DIR, 'cpg_install' );

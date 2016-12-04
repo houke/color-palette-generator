@@ -21,7 +21,6 @@ function cpg_add_palette() {
 
 			$term_parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
 			$term_child  = get_term_by( 'slug', $dominant, 'cpg_dominant_color' );
-			delete_option( 'cpg_dominant_color_children' );
 			wp_update_term( $term_child->term_id, 'cpg_dominant_color', array( 'parent' => $term_parent->term_id ) );
 
 			wp_set_object_terms( $post_id, $palette, 'cpg_palette' );
@@ -69,31 +68,73 @@ function cpg_bulk_add_palette() {
 		$dominant = isset( $_POST['dominant'] ) ? $_POST['dominant'] : "";
 		$palette = isset( $_POST['palette'] ) ? $_POST['palette'] : "";
 		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+		$regenerate = isset( $_POST['regenerate'] ) ? $_POST['regenerate'] : false;
 
-		$PKR = new PKRoundColor();
-		$parent = $PKR->getRoundedColor($dominant);
-
-		if(
-			get_post_type( $post_id ) == 'attachment' &&
-			wp_verify_nonce( $nonce, 'cpg_bulk_generate_palette_'.$post_id.'_nonce' )
-		) {
-			wp_set_object_terms( $post_id, $dominant, 'cpg_dominant_color' );
-
-			$term_parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
-			$term_child  = get_term_by( 'slug', $dominant, 'cpg_dominant_color' );
-			delete_option( 'cpg_dominant_color_children' );
-			wp_update_term( $term_child->term_id, 'cpg_dominant_color', array( 'parent' => $term_parent->term_id ) );
-
-			wp_set_object_terms( $post_id, $palette, 'cpg_palette' );
-
-			$next_img = get_attachment_without_colors( $post_id );
+		if( $regenerate == true && wp_verify_nonce( $nonce, 'cpg_bulk_regenerate_palette_nonce' ) ) {
+			cpg_setup_taxonomies( true );
+			$next_img = get_attachment_without_colors();
 			if( is_array( $next_img ) ) {
-				$nonce = array( 'nonce' => wp_create_nonce( 'cpg_bulk_generate_palette_'.$next_img['id'].'_nonce' ) );
+				$nonce = array(
+					'nonce' => wp_create_nonce( 'cpg_bulk_generate_palette_'.$next_img['id'].'_nonce' ),
+					'regenerate' => true
+				);
 				$result = array_merge( $next_img, $nonce );
 			}else{
 				$result = array( 'more' => false );
 			}
 			echo json_encode( $result );
+		}else{
+			$PKR = new PKRoundColor();
+			$parent = $PKR->getRoundedColor($dominant);
+
+			if(
+				get_post_type( $post_id ) == 'attachment' &&
+				wp_verify_nonce( $nonce, 'cpg_bulk_generate_palette_'.$post_id.'_nonce' )
+			) {
+				wp_set_object_terms( $post_id, $dominant, 'cpg_dominant_color' );
+
+				$term_parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
+				$term_child  = get_term_by( 'slug', $dominant, 'cpg_dominant_color' );
+				wp_update_term( $term_child->term_id, 'cpg_dominant_color', array( 'parent' => $term_parent->term_id ) );
+
+				wp_set_object_terms( $post_id, $palette, 'cpg_palette' );
+
+				$next_img = get_attachment_without_colors( $post_id );
+				if( is_array( $next_img ) ) {
+					$nonce = array(
+						'nonce' => wp_create_nonce( 'cpg_bulk_generate_palette_'.$next_img['id'].'_nonce' ),
+						'regenerate' => false
+					);
+					$result = array_merge( $next_img, $nonce );
+				}else{
+					$result = array( 'more' => false );
+				}
+				echo json_encode( $result );
+			}else{
+				$output = '<span style="color:#f00;">' . __( 'Something went wrong', 'cpg' ) . '</span>';
+				echo json_encode( $output );
+			}
+		}
+
+	}
+    wp_die();
+}
+
+//Make it possible for users to edit the color table
+add_action( 'wp_ajax_cpg_edit_color_table', 'cpg_edit_color_table' );
+function cpg_edit_color_table() {
+	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		$options = get_option('cpg_options');
+		$option_to_update = $options['color_table'];
+		$color_table = isset( $_POST['color_table'] ) ? $_POST['color_table'] : "";
+		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+
+		if(
+			$color_table != '' &&
+			wp_verify_nonce( $nonce, 'cpg_update_color_table_'.$post_id.'_nonce' )
+		) {
+			var_dump($color_table);
+			echo json_encode( $output );
 		}else{
 			$output = '<span style="color:#f00;">' . __( 'Something went wrong', 'cpg' ) . '</span>';
 			echo json_encode( $output );
