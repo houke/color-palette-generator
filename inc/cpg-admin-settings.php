@@ -176,6 +176,41 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 }
 add_filter( 'image_send_to_editor', 'cpg_send_image_to_editor', 12, 9 );
 
+//add meta box to edit attachment pages
+function add_our_attachment_meta(){
+	$options = get_option('cpg_options');
+	if(
+		isset( $_GET['post'] ) &&
+		wp_attachment_is_image( $_GET['post'] ) &&
+		isset( $options['show_on_attachment'] ) &&
+		$options['show_on_attachment'] == 'true'
+	){
+   		add_meta_box(
+			'cpg-attachment-meta-box',
+         	'Palette',
+         	'cpg_attachment_meta_box_callback',
+         	'attachment',
+         	'side',
+         	'low'
+        );
+	}
+}
+add_action( 'admin_init', 'add_our_attachment_meta' );
+
+function cpg_attachment_meta_box_callback(){
+    global $post;
+    wp_enqueue_style( 'cpg-generate-palette-column-css' );
+    wp_enqueue_script( 'cpg-generate-palette' );
+	$dominant = get_the_terms( $post->ID, 'cpg_dominant_color' );
+	if($dominant){
+		$dominant = $dominant[0];
+		$palette = get_the_terms( $post->ID, 'cpg_palette' );
+		echo '<div class="cpg__meta-box">' . cpg_admin_show_palette( $dominant->name, $palette, $post->ID ) . '</div>';
+	}else{
+		echo '<div class="cpg__meta-box">' . cpg_admin_no_palette( $post->ID ) . '</div>';
+	}
+}
+
 //Save palette options to image insert
 function cpg_add_media_edit_fields_save( $post, $attachment ) {
     $show_value = isset( $attachment['cpg_show'] ) ? $attachment['cpg_show'] : '0';

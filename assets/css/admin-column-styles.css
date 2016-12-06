@@ -63,3 +63,26 @@ th.column-cpg_dominant_color_column{
 .cpg__color-item:hover:before{
 	display: block;
 }
+
+.cpg__meta-box{
+	margin-top: 10px;
+}
+
+.cpg__meta-box .cpg__dominant-color{
+	height: 30px;
+}
+
+.cpg__meta-box .cpg__palette-item{
+    width: calc(20% - 2px);
+	height: 25px;
+}
+
+.cpg__meta-box .cpg__palette-item:hover{
+	width: 20%;
+	height: 27px;
+}
+
+.cpg__meta-box .row-actions{
+	display: block;
+    left: 0;
+}

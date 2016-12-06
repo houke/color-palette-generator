@@ -35,108 +35,91 @@ add_action( 'manage_media_custom_column', 'cpg_set_palette_column_content', 10, 
 
 //Load scripts only when on media library
 function cpg_load_custom_wp_admin_scripts( $hook ) {
+    wp_register_style(
+    	'cpg-generate-palette-column-css',
+    	plugins_url( 'assets/css/admin-column-styles.css', dirname(__FILE__) )
+	);
+	wp_register_script(
+		'cpg-color-thief',
+		plugins_url( 'assets/dependencies/color-thief/src/color-thief.js', dirname(__FILE__) )
+	);
+	wp_register_script(
+		'cpg-admin-functions',
+		plugins_url( 'assets/js/admin-functions.js', dirname(__FILE__), array( 'jquery' ) )
+	);
+    wp_register_script(
+    	'cpg-generate-palette',
+    	plugins_url( 'assets/js/generate-palette.js', dirname(__FILE__) ),
+    	array( 'jquery', 'cpg-color-thief', 'cpg-admin-functions' )
+	);
+    wp_register_script(
+    	'cpg-bulk-generate-palette',
+    	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
+    	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' )
+	);
+    wp_register_style(
+    	'cpg-generate-palette-settings-page-css',
+    	plugins_url( 'assets/css/admin-settings-page-styles.css', dirname(__FILE__) )
+	);
+    wp_register_style(
+    	'cpg-media-popup-style-css',
+    	plugins_url( 'assets/css/admin-media-popup-styles.css', dirname(__FILE__) )
+	);
+
+	wp_localize_script( 'cpg-bulk-generate-palette', 'cpg',
+		array(
+			'generating' => __( 'Generating', 'cpg' ),
+			'deleting' => __('Deleting', 'cpg'),
+			'regenerating' => __('Regenerating', 'cpg'),
+			'done' => __( 'All images have a palette. Well done!', 'cpg' ),
+			'enter_value' => __('Please enter a name for this color row', 'cpg'),
+			'enter_value_placeholder' => __('Color name', 'cpg'),
+			'keep_open' => __('Keep this page open until everything is done', 'cpg')
+		)
+	);
+
+    wp_localize_script( 'cpg-admin-functions', 'cpg',
+		array(
+			'error' => __( 'Something went wrong', 'cpg' ),
+			'error_0' => __('Not connected, please verify your network', 'cpg'),
+			'error_1' => __('Requested page not found. (404)', 'cpg'),
+			'error_2' => __( 'Internal Server Error (500)', 'cpg' ),
+			'error_3' => __( 'Requested JSON parse failed', 'cpg' ),
+			'error_4' => __( 'Time out error', 'cpg' ),
+			'error_5' => __( 'Ajax request aborted', 'cpg' ),
+			'error_x' => __( 'Uncaught error', 'cpg' ),
+		)
+	);
+
+	wp_localize_script( 'cpg-generate-palette', 'cpg',
+		array(
+			'generating' => __( 'Generating', 'cpg' ),
+			'trashing' => __( 'Trashing', 'cpg' ),
+			'confirm_trash' => __( 'You\'re about to permanently delete this palette.', 'cpg') . "\n" . __('\'Cancel\' to stop, \'OK\' to delete!', 'cpg')
+		)
+	);
 	switch($hook){
 		case 'upload.php':
-			wp_register_script(
-				'cpg-color-thief',
-				plugins_url( 'assets/dependencies/color-thief/src/color-thief.js', dirname(__FILE__) )
-			);
 		    wp_enqueue_script( 'cpg-color-thief' );
-
-			wp_register_script(
-				'cpg-admin-functions',
-				plugins_url( 'assets/js/admin-functions.js', dirname(__FILE__), array( 'jquery' ) )
-			);
 		    wp_enqueue_script( 'cpg-admin-functions' );
-
-		    wp_localize_script( 'cpg-admin-functions', 'cpg',
-				array(
-					'error' => __( 'Something went wrong', 'cpg' ),
-					'error_0' => __('Not connected, please verify your network', 'cpg'),
-					'error_1' => __('Requested page not found. (404)', 'cpg'),
-					'error_2' => __( 'Internal Server Error (500)', 'cpg' ),
-					'error_3' => __( 'Requested JSON parse failed', 'cpg' ),
-					'error_4' => __( 'Time out error', 'cpg' ),
-					'error_5' => __( 'Ajax request aborted', 'cpg' ),
-					'error_x' => __( 'Uncaught error', 'cpg' ),
-				)
-			);
-
-		    wp_register_script(
-		    	'cpg-generate-palette',
-		    	plugins_url( 'assets/js/generate-palette.js', dirname(__FILE__) ),
-		    	array( 'jquery', 'cpg-color-thief', 'cpg-admin-functions' )
-			);
 		    wp_enqueue_script( 'cpg-generate-palette' );
-
-			wp_localize_script( 'cpg-generate-palette', 'cpg',
-				array(
-					'generating' => __( 'Generating', 'cpg' ),
-					'trashing' => __( 'Trashing', 'cpg' ),
-					'confirm_trash' => __( 'You\'re about to permanently delete this palette.', 'cpg') . "\n" . __('\'Cancel\' to stop, \'OK\' to delete!', 'cpg')
-				)
-			);
-
-		    wp_register_style(
-		    	'cpg-generate-palette-column-css',
-		    	plugins_url( 'assets/css/admin-column-styles.css', dirname(__FILE__) )
-			);
 		    wp_enqueue_style( 'cpg-generate-palette-column-css' );
 			break;
 
 		case 'media_page_color-palette-generator':
-			wp_register_script(
-				'cpg-color-thief',
-				plugins_url( 'assets/dependencies/color-thief/src/color-thief.js', dirname(__FILE__) )
-			);
 		    wp_enqueue_script( 'cpg-color-thief' );
-
-			wp_register_script(
-				'cpg-admin-functions',
-				plugins_url( 'assets/js/admin-functions.js', dirname(__FILE__), array( 'jquery' ) )
-			);
 		    wp_enqueue_script( 'cpg-admin-functions' );
-
-		    wp_register_script(
-		    	'cpg-bulk-generate-palette',
-		    	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
-		    	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' )
-			);
 		    wp_enqueue_script( 'cpg-bulk-generate-palette' );
-
-			wp_localize_script( 'cpg-bulk-generate-palette', 'cpg',
-				array(
-					'generating' => __( 'Generating', 'cpg' ),
-					'deleting' => __('Deleting', 'cpg'),
-					'regenerating' => __('Regenerating', 'cpg'),
-					'done' => __( 'All images have a palette. Well done!', 'cpg' ),
-					'enter_value' => __('Please enter a name for this color row', 'cpg'),
-					'enter_value_placeholder' => __('Color name', 'cpg'),
-					'keep_open' => __('Keep this page open until everything is done', 'cpg')
-				)
-			);
-
-		    wp_register_style(
-		    	'cpg-generate-palette-settings-page-css',
-		    	plugins_url( 'assets/css/admin-settings-page-styles.css', dirname(__FILE__) )
-			);
 		    wp_enqueue_style( 'cpg-generate-palette-settings-page-css' );
-
 		    wp_enqueue_style( 'wp-color-picker' );
-
 			break;
 
 		case 'post.php':
-		    wp_register_style(
-		    	'cpg-media-popup-style-css',
-		    	plugins_url( 'assets/css/admin-media-popup-styles.css', dirname(__FILE__) )
-			);
 		    wp_enqueue_style( 'cpg-media-popup-style-css' );
 		default:
 			return;
 			break;
 	}
-
 }
 add_action( 'admin_enqueue_scripts', 'cpg_load_custom_wp_admin_scripts' );
 
