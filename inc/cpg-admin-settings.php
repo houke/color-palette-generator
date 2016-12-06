@@ -81,7 +81,7 @@ function cpg_create_field_color_filter() {
 	$substring = $checked ? __('You can now edit the color table below. If you do this, all palettes need to be regenerated', 'cpg') : __('Only check this if you know what you\'re doing', 'cpg');
 
 	echo '<label><input id="cpg_edit_colors" name="cpg_options[edit_colors]" type="checkbox" value="true" '.$checked.'/>
-	<small>'.$substring.'. <br/><a href="#" target="_blank">' . __('Read more about this option', 'cpg') . '</a></small></label>';
+	<small>'.$substring.'. <br/><a href="https://www.thearthunters.com/color-palette-generator/" target="_blank">' . __('Read more about this option', 'cpg') . '</a></small></label>';
 }
 
 //Add palette options to image insert
@@ -195,6 +195,12 @@ add_filter( 'attachment_fields_to_save', 'cpg_add_media_edit_fields_save', 10, 2
 
 //Layout for settings page
 function cpg_settings_page(){
+	if( isset($_GET['reset']) ){
+		$options = get_option('cpg_options');
+		$default_colors = cpg_default_color_table();
+		$options['color_table'] = $default_colors['color_table'];
+		update_option( 'cpg_options', $options);
+	}
 	$total = cpg_img_count();
 	$with = cpg_img_count( true );
 	$options = get_option('cpg_options');
@@ -204,17 +210,39 @@ function cpg_settings_page(){
 	<div class="wrap">
 		<h1><?php _e("Color Palette Generator",'cpg'); ?></h1>
 		<?php settings_errors(); ?>
-		<?php if( isset( $_GET['action'] ) && $_GET['action'] != '' ){ //TODO make actions work without JS ?>
-		<p>
-			<?php _e('Something went wrong. You probably ended here because of a javascript error.', 'cpg'); ?>
-			<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
-				<?php _e('Click here to refresh.', 'cpg'); ?>
-			</a>
-		</p>
-		<?php }else{ ?>
+
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<div id="post-body-content">
+					<?php if( isset( $_GET['action'] ) && $_GET['action'] != '' ){ ?>
+
+					<div id="cpg-stats" class="postbox cpg-postbox">
+						<h2 class="hndle cpg-hndle"><?php _e('Error', 'cpg'); ?></h2>
+						<div class="inside">
+							<p>
+								<?php _e('Something went wrong. You probably landed here because of a javascript error. Make sure your javascript is enabled, this plugin will not work without it.', 'cpg'); ?>
+								<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
+									<?php _e('Click here to refresh.', 'cpg'); ?>
+								</a>
+							</p>
+						</div>
+					</div>
+
+					<?php }elseif( isset( $_GET['reset'] ) && $_GET['reset'] == 'true'  ){ ?>
+
+					<div id="cpg-stats" class="postbox cpg-postbox">
+						<h2 class="hndle cpg-hndle"><?php _e('Reset successful', 'cpg'); ?></h2>
+						<div class="inside">
+							<p>
+								<?php _e('The color table has been reset successfully. The colors initially added by this plugin are now your default colors again. If you generated the palettes with altered colors and you no longer want to use them, be sure to regenereate all your palettes.', 'cpg'); ?>
+								<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
+									<?php _e('Click here to see your color table.', 'cpg'); ?>
+								</a>
+							</p>
+						</div>
+					</div>
+
+					<?php }else{ ?>
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle">
@@ -277,8 +305,10 @@ function cpg_settings_page(){
 								<tfoot>
 									<tr>
 										<td colspan="3">
-											<button class="button cpg-color-table__add-row"><?php _e('Add color row', 'cpg'); ?></button>
-											<a href="#" data-reset><?php _e('Reset to default', 'cpg'); ?></a>
+											<p>
+												<button class="button cpg-color-table__add-row"><?php _e('Add color row', 'cpg'); ?></button>
+												<a href="<?php echo esc_url( add_query_arg( 'reset', 'true', $_SERVER['REQUEST_URI'] ) ); ?>" data-reset class="cpg-reset-table"><?php _e('Reset to default', 'cpg'); ?></a>
+											</p>
 										</td>
 									</tr>
 								</tfoot>
@@ -300,7 +330,7 @@ function cpg_settings_page(){
 													<span class="trash"><a href="#"><?php _e('Trash row', 'cpg'); ?></a></span>
 												</div>
 											</td>
-											<td><input type="text" value="<?php echo $name; ?>" name="cpg_options[color_table][<?php echo $name_in_array; ?>][name]"/></td>
+											<td><input type="text" value="<?php echo $name; ?>" name="cpg_options[color_table][<?php echo $name_in_array; ?>][name]" class="cpg-color-name"/></td>
 											<td>
 												<div class="cpg-color-table__colors">
 												<?php foreach ($tints as $tint) { $tint = '#'.$tint; ?>
@@ -321,6 +351,7 @@ function cpg_settings_page(){
 						</div>
 						<?php submit_button(); ?>
 					</form>
+					<?php } ?>
 				</div>
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="cpg-stats" class="postbox cpg-postbox">
@@ -354,7 +385,6 @@ function cpg_settings_page(){
 				</div>
 			</div>
 		</div>
-		<?php } ?>
 	</div>
 	<div class="clear"></div>
 	<?php
@@ -365,7 +395,7 @@ function cpg_register_default_settings(){
 	add_option( 'cpg_options', cpg_default_color_table() );
 
     $args = array(
-        'public' => true,
+        'public' => false,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false,
         'hierarchical' => true

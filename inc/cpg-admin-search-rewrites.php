@@ -29,6 +29,7 @@
  			$color = get_query_var( 'color' );
  			$colors = cpg_return_colors();
  			$check_search = explode('/', $search);
+ 			$cl = "";
 
  			if(
 				is_array($check_search) &&
@@ -36,13 +37,13 @@
 				isset($colors[$check_search[1]])
 			){
  				$search = "";
- 				$color = $colors[$check_search[1]];
-			}elseif( isset( $color ) && $color != "" ){
-				$color = $colors[$color];
+ 				$cl = $colors[$check_search[1]];
+			}elseif( isset( $color ) && $color != "" && array_key_exists( $color, $colors ) ){
+				$cl = $colors[$color];
 			}
 
-			if($color != "" ){
-				$parent = get_term_by( 'slug', $color, 'cpg_dominant_color' );
+			if($cl != "" ){
+				$parent = get_term_by( 'slug', $cl, 'cpg_dominant_color' );
 				$childs = get_terms( 'cpg_dominant_color', array( 'hide_empty' => false, 'parent' => $parent->term_id ) );
 
 				$colors = array();

@@ -3,7 +3,7 @@ Contributors: houkedekwant
 Donate link: http://nl.linkedin.com/in/houkedekwant
 Tags: color palette, color palette generator, image, images, color, colour, colour palette, palette, attachments
 Requires at least: 3.5
-Tested up to: 4.6.1
+Tested up to: 4.7
 Stable tag: trunk
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -62,7 +62,6 @@ Manual Installation:
 
 * Make browser compatible (Promises don't work in IE)
 * Generate palette on upload
-* Add developer functions
 
 == Upgrade Notice ==
 

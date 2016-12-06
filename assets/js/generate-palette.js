@@ -30,23 +30,14 @@ jQuery(document).on('ready', function() {
 	});
 
 	function cpg_AddColorsForImage(elem, image, id, nonce, colors) {
-		colorThiefOutput = {};
+		var cpg_dominant = jQuery.Deferred();
+		var cpg_palette = jQuery.Deferred();
+		var cpg_td = elem.parent();
 
-		var color = new Promise(function(resolve, reject) {
-		  resolve(cpg_colorThief.getColor(image));
-		});
+		cpg_dominant.resolve( cpg_colorThief.getColor(image) );
+		cpg_palette.resolve( cpg_colorThief.getPalette(image, colors) );
 
-		var palette = color.then(function(value){
-			colorThiefOutput.dominant = value;
-			return new Promise(function(resolve, reject) {
-				resolve(cpg_colorThief.getPalette(image, colors));
-			});
-		});
-
-		palette.then(function(value){
-			colorThiefOutput.palette = value;
-		}).then(function(){
-			var cpg_td = elem.parent();
+		jQuery.when( cpg_dominant, cpg_palette ).then(function( cpg_dominant, cpg_palette ){
 			jQuery.ajax({
 				url: ajaxurl,
 	         	type: 'post',
@@ -54,8 +45,8 @@ jQuery(document).on('ready', function() {
 	         	timeout: 30000,
 	         	data: {
 	         		action: 'cpg_add_palette',
-	         		dominant: colorThiefOutput.dominant,
-	         		palette: colorThiefOutput.palette,
+	         		dominant: cpg_dominant,
+	         		palette: cpg_palette,
 	         		nonce: nonce,
 	         		id: id
 	         	},
@@ -67,6 +58,8 @@ jQuery(document).on('ready', function() {
 			        cpg_td.html('<span style="color:#f00;">'+msg+'</span>');
 			    },
 	        });
+		}, function(){
+	        cpg_td.html('<span style="color:#f00;">'+msg+'</span>');
 		});
 	}
 

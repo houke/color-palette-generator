@@ -111,8 +111,10 @@
 	line-height: 30px;
 }
 
-.cpg-postbox .form-table{
+.cpg-postbox table.form-table{
 	margin-top: 0;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
 }
 
 .cpg-postbox .form-table tr th,
@@ -146,6 +148,7 @@
 .cpg-color-table{
 	width: 100%;
 	border-collapse: collapse;
+	margin-bottom: 10px;
 }
 
 .cpg-color-table tbody>:nth-child(odd){
@@ -154,6 +157,7 @@
 
 .cpg-color-table tfoot{
 	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
 }
 
 .cpg-color-table th{
@@ -236,6 +240,7 @@
 	display: none;
 }
 
-.cpg-button-bulk--regenerate{
+.cpg-button-bulk--regenerate,
+.cpg-reset-table{
 	margin-left: 10px;
 }

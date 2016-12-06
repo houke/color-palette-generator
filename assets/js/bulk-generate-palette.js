@@ -16,7 +16,7 @@ jQuery(document).on('ready', function() {
 		e.preventDefault();
 		var elem = jQuery(this);
 		var params = cpg_parseParams( elem.attr('href').split('?')[1] );
-		jQuery('[data-with]').html( '~' );
+		jQuery('[data-with]').html( '&bull;&bull;&bull;' );
 		jQuery('.cpg__inside--generate').html('<p>'+cpg.deleting+'... <br/><small>'+cpg.keep_open+'</small></p>');
 		jQuery.ajax({
 			url: ajaxurl,
@@ -35,7 +35,7 @@ jQuery(document).on('ready', function() {
          		if(response.more){
          			cpg_CreateImg(response.src, response.id, response.nonce);
          		}else{
-         			jQuery('.cpg__inside--btn').html(cpg.done);
+         			jQuery('.cpg__inside--generate').html(cpg.done);
          			jQuery('.cpg-hndle small').remove();
          		}
          	},
@@ -67,6 +67,16 @@ jQuery(document).on('ready', function() {
 	jQuery(document).on('click', '.cpg-color-table .trash', function(e){
 		e.preventDefault();
 		jQuery(this).parents('tr').remove();
+	});
+
+	jQuery(document).on('keyup', '.cpg-color-name', function(){
+		var input = jQuery(this).val();
+		var inputs = jQuery(this).parents('tr').find('input');
+		inputs.each(function(){
+			var name = jQuery(this).attr('name');
+			name = name.replace( /_table\]\[.*?\]\s?/g, '_table]['+input+']' );
+			jQuery(this).attr( 'name', name.toLowerCase() );
+		});
 	});
 
 	jQuery(document).on('click', function(e){
@@ -110,7 +120,7 @@ jQuery(document).on('ready', function() {
 					</div>\
 				</td>\
 				<td>\
-					<input type="text" readonly="readonly" value="'+new_color+'" placeholder="Color name" name="cpg_options[color_table]['+new_color_lower+'][name]"/>\
+					<input type="text" class="cpg-color-name" readonly="readonly" value="'+new_color+'" placeholder="Color name" name="cpg_options[color_table]['+new_color_lower+'][name]"/>\
 				</td>\
 				<td>\
 					<div class="cpg-color-table__colors">\
@@ -139,22 +149,14 @@ jQuery(document).on('ready', function() {
 	}
 
 	function cpg_AddColorsForImage(image, id, nonce, colors, regenerate) {
-		colorThiefOutput = {};
 
-		var color = new Promise(function(resolve, reject) {
-		  resolve(cpg_colorThief.getColor(image));
-		});
+		var cpg_dominant = jQuery.Deferred();
+		var cpg_palette = jQuery.Deferred();
 
-		var palette = color.then(function(value){
-			colorThiefOutput.dominant = value;
-			return new Promise(function(resolve, reject) {
-				resolve(cpg_colorThief.getPalette(image, colors));
-			});
-		});
+		cpg_dominant.resolve( cpg_colorThief.getColor(image) );
+		cpg_palette.resolve( cpg_colorThief.getPalette(image, colors) );
 
-		palette.then(function(value){
-			colorThiefOutput.palette = value;
-		}).then(function(){
+		jQuery.when( cpg_dominant, cpg_palette ).done(function( cpg_dominant, cpg_palette ) {
 			jQuery.ajax({
 				url: ajaxurl,
 	         	type: 'post',
@@ -162,8 +164,8 @@ jQuery(document).on('ready', function() {
 	         	timeout: 30000,
 	         	data: {
 					action: 'cpg_bulk_add_palette',
-	         		dominant: colorThiefOutput.dominant,
-	         		palette: colorThiefOutput.palette,
+	         		dominant: cpg_dominant,
+	         		palette: cpg_palette,
 					id: id,
 					nonce: nonce,
 					regenerate: regenerate
@@ -172,7 +174,7 @@ jQuery(document).on('ready', function() {
 	         		if(response.more){
 	         			cpg_CreateImg(response.src, response.id, response.nonce);
 	         		}else{
-	         			jQuery('.cpg__inside--btn').html(cpg.done);
+	         			jQuery('.cpg__inside--generate').html(cpg.done);
 	         			jQuery('.cpg-hndle small').remove();
 	         		}
 	         		if(response.regenerate){
