@@ -205,9 +205,9 @@ function cpg_attachment_meta_box_callback(){
 	if($dominant){
 		$dominant = $dominant[0];
 		$palette = get_the_terms( $post->ID, 'cpg_palette' );
-		echo '<div class="cpg__meta-box">' . cpg_admin_show_palette( $dominant->name, $palette, $post->ID ) . '</div>';
+		echo '<div class="cpg__meta-box cpg_dominant_color_column">' . cpg_admin_show_palette( $dominant->name, $palette, $post->ID ) . '</div>';
 	}else{
-		echo '<div class="cpg__meta-box">' . cpg_admin_no_palette( $post->ID ) . '</div>';
+		echo '<div class="cpg__meta-box cpg_dominant_color_column">' . cpg_admin_no_palette( $post->ID ) . '</div>';
 	}
 }
 

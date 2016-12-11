@@ -74,7 +74,6 @@
 	}
 	add_action('pre_get_posts','search_filter');
 
-
 	function cpg_custom_search_tpl( $original_template ) {
 		$priority_template_lookup = array(
 			get_stylesheet_directory() . 'templates/search.php',
