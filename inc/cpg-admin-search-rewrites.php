@@ -67,6 +67,12 @@
 					);
 	 			}
 
+	 			if( defined( 'WPSEO_VERSION' ) ) {
+					add_filter( 'wpseo_title', 'cpg_filter_title' );
+	 			} else {
+	 				apply_filters('pre_get_document_title', 'cpg_filter_title');
+	 			}
+
 				add_filter( 'template_include', 'cpg_custom_search_tpl' );
 	 		}
 	  	}
@@ -74,6 +80,25 @@
 	}
 	add_action('pre_get_posts','search_filter');
 
+	function cpg_filter_title($title) {
+		$search = get_query_var( 's' );
+		$color = get_query_var( 'color' );
+		$colors = cpg_return_colors();
+		$check_search = explode('/', $search);
+
+		if(
+			is_array($check_search) &&
+			$check_search[0] == 'color' &&
+			isset($colors[$check_search[1]])
+		){
+			$title = __('Results for the color ' . ucfirst( str_replace('-', ' ', $check_search[1]) ), 'cpg');
+		}elseif( isset( $color ) && $color != "" && array_key_exists( $color, $colors ) ){
+			$title = __('Results for the color ' . ucfirst( str_replace('-', ' ', $color) ), 'cpg');
+		} else{
+			$title = $title;
+		}
+	    return $title;
+	}
 	function cpg_custom_search_tpl( $original_template ) {
 		$priority_template_lookup = array(
 			get_stylesheet_directory() . 'templates/search.php',

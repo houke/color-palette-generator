@@ -408,13 +408,16 @@ function cpg_settings_page(){
 					</div>
 
 					<div id="cpg-use-cases" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle"><span><?php _e('Use cases', 'cpg'); ?></span></h2>
+						<h2 class="hndle cpg-hndle"><span><?php _e('Brought to you by TheArtHunters.com', 'cpg'); ?></span></h2>
 						<div class="inside">
 							<a href="https://www.thearthunters.com/" target="__blank">
 								<img src="<?php echo CPG_URL; ?>assets/img/tah.jpg" alt="TheArtHunters"/>
 							</a>
-							<p><a href="https://www.thearthunters.com/color/red/" target="_blank">&raquo; <?php _e( 'Search for artworks per color', 'cpg' ); ?></a></p>
-							<p><a href="https://www.thearthunters.com/new-movie-posters-star-wars-rogue-one/" target="_blank">&raquo; <?php _e( 'Show a palette per image', 'cpg' ); ?></a></p>
+							<p><a href="https://www.thearthunters.com/color/red/" target="_blank">&raquo; <?php _e( 'Example: artworks per color', 'cpg' ); ?></a></p>
+							<p><a href="https://www.thearthunters.com/new-movie-posters-star-wars-rogue-one/" target="_blank">&raquo; <?php _e( 'Example: palette per image', 'cpg' ); ?></a></p>
+							<p>
+								<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQPYCAHS5WXZE" target="_blank">&raquo; <?php _e('Buy us a cup of coffee', 'cpg'); ?></a>
+							</p>
 						</div>
 					</div>
 				</div>
