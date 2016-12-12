@@ -1,8 +1,8 @@
 <?php
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 //output palette after image
-add_filter( 'prepend_attachment', 'custom_prepend_attachment' );
-function custom_prepend_attachment( $attachment_content ){
+add_filter( 'prepend_attachment', 'cpg_prepend_attachment' );
+function cpg_prepend_attachment( $attachment_content ){
 
 	$options = get_option('cpg_options');
 	if( isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ){

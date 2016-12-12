@@ -23,7 +23,7 @@
 	}
 	add_action('init', 'cpg_create_new_url_querystring');
 
-	function search_filter( $query ) {
+	function cpg_search_filter( $query ) {
 	 	if ( !is_admin() && $query->is_main_query() && $query->is_search ) {
  			$search = get_query_var( 's' );
  			$color = get_query_var( 'color' );
@@ -70,7 +70,9 @@
 	 			if( defined( 'WPSEO_VERSION' ) ) {
 					add_filter( 'wpseo_title', 'cpg_filter_title' );
 	 			} else {
-	 				apply_filters('pre_get_document_title', 'cpg_filter_title');
+	 				add_filter( 'pre_get_document_title', 'cpg_filter_title', 15 );
+					add_filter( 'wp_title', 'cpg_filter_title', 15, 3 );
+					add_filter( 'thematic_doctitle', 'cpg_filter_title', 15 );
 	 			}
 
 				add_filter( 'template_include', 'cpg_custom_search_tpl' );
@@ -78,7 +80,7 @@
 	  	}
 	  	return $query;
 	}
-	add_action('pre_get_posts','search_filter');
+	add_action( 'pre_get_posts', 'cpg_search_filter' );
 
 	function cpg_filter_title($title) {
 		$search = get_query_var( 's' );
@@ -91,14 +93,15 @@
 			$check_search[0] == 'color' &&
 			isset($colors[$check_search[1]])
 		){
-			$title = __('Results for the color ' . ucfirst( str_replace('-', ' ', $check_search[1]) ), 'cpg');
+			$title = __('Results for the color &lsquo;' . str_replace('-', ' ', $check_search[1]) . '&rsquo;', 'cpg');
 		}elseif( isset( $color ) && $color != "" && array_key_exists( $color, $colors ) ){
-			$title = __('Results for the color ' . ucfirst( str_replace('-', ' ', $color) ), 'cpg');
+			$title = __('Results for the color &lsquo;' . str_replace('-', ' ', $color) . '&rsquo;', 'cpg');
 		} else{
 			$title = $title;
 		}
 	    return $title;
 	}
+
 	function cpg_custom_search_tpl( $original_template ) {
 		$priority_template_lookup = array(
 			get_stylesheet_directory() . 'templates/search.php',
