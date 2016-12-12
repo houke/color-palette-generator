@@ -104,8 +104,8 @@
 
 	function cpg_custom_search_tpl( $original_template ) {
 		$priority_template_lookup = array(
-			get_stylesheet_directory() . 'templates/search.php',
-			get_template_directory() . 'templates/search.php',
+			get_stylesheet_directory() . '/templates/search.php',
+			get_template_directory() . '/templates/search.php',
 			plugin_dir_path( dirname( __FILE__ ) ) . 'templates/search.php',
 		);
 

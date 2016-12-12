@@ -1,14 +1,24 @@
 <?php
-	if (!defined('WP_UNINSTALL_PLUGIN')) {
-	    die;
+	if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+		exit();
 	}
-	function delete_custom_terms( $taxonomies ){
-	    global $wpdb;
 
-	    foreach ( $taxonomies as $taxonomy ) {
-			$wpdb->get_results( $wpdb->prepare( "DELETE t.*, tt.* FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN ('%s')", $taxonomy ) );
-			$wpdb->delete( $wpdb->term_taxonomy, array( 'taxonomy' => $taxonomy ), array( '%s' ) );
-		}
+	global $wpdb;
+	foreach ( array( 'cpg_dominant_color', 'cpg_palette' ) as $taxonomy ) {
+		$wpdb->query( "
+			DELETE FROM
+			{$wpdb->terms}
+			WHERE term_id IN
+			( SELECT * FROM (
+				SELECT {$wpdb->terms}.term_id
+				FROM {$wpdb->terms}
+				JOIN {$wpdb->term_taxonomy}
+				ON {$wpdb->term_taxonomy}.term_id = {$wpdb->terms}.term_id
+				WHERE taxonomy = '$taxonomy'
+			) as T
+			);
+		" );
+
+		$wpdb->query( "DELETE FROM {$wpdb->term_taxonomy} WHERE taxonomy = '$taxonomy'" );
 	}
-	delete_custom_terms( array( 'cpg_dominant_color', 'cpg_palette' ) );
 
