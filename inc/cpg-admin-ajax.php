@@ -60,6 +60,39 @@ function cpg_trash_palette() {
     wp_die();
 }
 
+
+add_action( 'wp_ajax_cpg_exclude_bulk', 'cpg_exclude_bulk' );
+function cpg_exclude_bulk(){
+	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
+		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+
+		if(
+			get_post_type( $post_id ) == 'attachment' &&
+			wp_verify_nonce( $nonce, 'cpg_bulk_generate_palette_'.$post_id.'_nonce' )
+		) {
+			add_post_meta($post_id, 'cpg_exclude', 'true');
+
+			$next_img = get_attachment_without_colors( $post_id );
+			if( is_array( $next_img ) ) {
+				$nonce = array(
+					'nonce' => wp_create_nonce( 'cpg_bulk_generate_palette_'.$next_img['id'].'_nonce' ),
+					'regenerate' => false
+				);
+				$result = array_merge( $next_img, $nonce );
+			}else{
+				$result = array( 'more' => false );
+			}
+			echo json_encode( $result );
+		}else{
+			$output = '<span style="color:#f00;">' . __( 'Something went wrong', 'cpg' ) . '</span>';
+			echo json_encode( $output );
+		}
+
+	}
+    wp_die();
+}
+
 //Make it possible to bulk add a palette per image
 add_action( 'wp_ajax_cpg_bulk_add_palette', 'cpg_bulk_add_palette' );
 function cpg_bulk_add_palette() {

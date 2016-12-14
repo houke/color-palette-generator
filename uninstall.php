@@ -21,4 +21,3 @@
 
 		$wpdb->query( "DELETE FROM {$wpdb->term_taxonomy} WHERE taxonomy = '$taxonomy'" );
 	}
-

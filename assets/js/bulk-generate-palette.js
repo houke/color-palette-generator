@@ -144,8 +144,43 @@ jQuery(document).on('ready', function() {
 		img.src = src;
 		img.onload = function(){
 		    cpg_colorThief = new ColorThief();
-		    var color = cpg_AddColorsForImage(img, id, nonce, colors, regenerate);
+		    cpg_AddColorsForImage(img, id, nonce, colors, regenerate);
 		};
+		img.onerror = function(){
+			if( jQuery('.cpg__inside--generate .cpg__inside--scroller').length < 1 ){
+				jQuery('.cpg__inside--generate').append('<div class="cpg__inside--scroller"/>');
+			}
+		    cpg_ExcludeFromBulk(id, nonce);
+		};
+	}
+
+	function cpg_ExcludeFromBulk(id, nonce){
+		jQuery.ajax({
+			url: ajaxurl,
+         	type: 'post',
+         	dataType: 'JSON',
+         	timeout: 30000,
+         	data: {
+				action: 'cpg_exclude_bulk',
+				id: id,
+				nonce: nonce,
+         	},
+         	success: function(response) {
+         		if(response.more){
+					jQuery('.cpg__inside--generate .cpg__inside--scroller').prepend('<p>'+cpg.loading_failed + ": " + id+'</p>');
+         			cpg_CreateImg(response.src, response.id, response.nonce);
+         		}else{
+         			jQuery('.cpg__inside--generate').html(cpg.done);
+         			jQuery('.cpg-hndle small').remove();
+         		}
+     			jQuery('[data-with]').html( parseInt(jQuery('[data-with]').html()) + 1);
+     			jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
+         	},
+         	error: function (jqXHR, exception) {
+		        var msg = cpg_showErrors(jqXHR, exception);
+		        jQuery('.cpg__inside--generate').html(msg);
+		    },
+        });
 	}
 
 	function cpg_AddColorsForImage(image, id, nonce, colors, regenerate) {
@@ -186,7 +221,7 @@ jQuery(document).on('ready', function() {
 	         	},
 	         	error: function (jqXHR, exception) {
 			        var msg = cpg_showErrors(jqXHR, exception);
-			        jQuery('.cpg__inside--btn').html(msg);
+			        jQuery('.cpg__inside--generate').html(msg);
 			    },
 	        });
 		});

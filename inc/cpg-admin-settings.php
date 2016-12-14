@@ -233,7 +233,7 @@ function cpg_settings_page(){
 	if( isset($_GET['reset']) ){
 		$options = get_option('cpg_options');
 		$default_colors = cpg_default_color_table();
-		$options['color_table'] = $default_colors['color_table'];
+		$options['color_table'] = $default_colors;
 		update_option( 'cpg_options', $options);
 	}
 	$total = cpg_img_count();
@@ -430,7 +430,11 @@ function cpg_settings_page(){
 //Setup settings & taxonomies used to store colors
 function cpg_register_default_settings(){
 	//set default colors for filtering
-	add_option( 'cpg_options', cpg_default_color_table() );
+	$default_opts = array(
+		'color_table' => cpg_default_color_table(),
+		'show_on_attachment' => true
+	);
+	add_option( 'cpg_options', $default_opts );
 
     $args = array(
         'public' => false,

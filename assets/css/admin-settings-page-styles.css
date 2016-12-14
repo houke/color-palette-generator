@@ -81,6 +81,11 @@
 	width: 100%;
 }
 
+.cpg__inside--scroller{
+	max-height: 300px;
+	overflow: auto;
+}
+
 .cpg__stats{
 	text-transform: uppercase;
 	font-size: 12px;

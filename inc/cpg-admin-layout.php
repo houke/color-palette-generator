@@ -74,7 +74,8 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 			'done' => __( 'All images have a palette. Well done!', 'cpg' ),
 			'enter_value' => __('Please enter a name for this color row', 'cpg'),
 			'enter_value_placeholder' => __('Color name', 'cpg'),
-			'keep_open' => __('Keep this page open until everything is done', 'cpg')
+			'keep_open' => __('Keep this page open until everything is done', 'cpg'),
+			'loading_failed' => __('Attachment skipped (File not found). ID')
 		)
 	);
 

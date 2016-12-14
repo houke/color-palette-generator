@@ -60,6 +60,10 @@
 	transform: translateX(-50%);
 }
 
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item:after{
+	text-transform: lowercase;
+}
+
 .cpg__palette-holder .cpg__dominant-color:before,
 .cpg__palette-holder .cpg__palette-list .cpg__palette-item:before{
 	content: "";
