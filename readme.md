@@ -1,4 +1,4 @@
-# Plugin Name #
+# Color Palette Generator #
 
 Generate color palettes for your WordPress images, append them to your images inside your content and make searching images by color available to your visitors.
 
