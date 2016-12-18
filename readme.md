@@ -52,7 +52,7 @@ Manual Installation:
 4. Add a widget to your sidebar
 5. The palette in use
 
-## TODO ##
+## Todo ##
 
 * Better uninstall functions (attachment meta needs to be removed)
 * Generate palette on upload
