@@ -5,13 +5,11 @@ Plugin URI: https://github.com/houke/color-palette-generator
 Description: Generates color palettes for your media uploads (jpg, png, gif), shows them on your website and allows you to filter images per color
 Version: 1.0
 Author: Houke de Kwant
-Author URI: http://nl.linkedin.com/in/houkedekwant
+Author URI: https://github.com/houke/
 Text Domain: cpg
 Domain Path: /languages
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: cpg
-Domain Path: /languages
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );

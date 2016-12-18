@@ -1,8 +1,8 @@
 === Color Palette Generator ===
 Contributors: houkedekwant
-Donate link: http://nl.linkedin.com/in/houkedekwant
+Donate link: https://github.com/houke/
 Tags: color palette, color palette generator, image, images, color, colour, colour palette, palette, attachments
-Requires at least: 4.4
+Requires at least: 4.0
 Tested up to: 4.7
 Stable tag: trunk
 License: GPL2
@@ -10,7 +10,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: cpg
 Domain Path: /languages
 
-This plugin generates color palettes for your WordPress images and appends them to your images inside your content.
+This plugin generates color palettes for your WordPress images and appends them to your content.
 
 == Description ==
 
@@ -33,6 +33,11 @@ If you don't like the way the plugin outputs the palettes, or you want to create
 = Special thanks =
 * Lokesh Dhakar, for the [color thief library](https://github.com/lokesh/color-thief)
 * Projekod, for the [Round Color class](https://github.com/Projekod/RoundColor)
+
+= TODO =
+
+* Better uninstall functions (attachment meta needs to be removed)
+* Generate palette on upload
 
 == Installation ==
 
@@ -58,10 +63,7 @@ Manual Installation:
 4. Add a widget to your sidebar
 5. The palette in use
 
-= TODO =
-
-* Better uninstall functions (attachment meta needs to be removed)
-* Generate palette on upload
+== Upgrade Notice ==
 
 == Changelog ==
 
