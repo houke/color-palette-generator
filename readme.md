@@ -57,8 +57,6 @@ Manual Installation:
 * Better uninstall functions (attachment meta needs to be removed)
 * Generate palette on upload
 
-## Upgrade Notice ##
-
 ## Changelog ##
 
 ### 1.0 ###
