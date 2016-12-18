@@ -16,11 +16,9 @@ class CPG_Widget extends WP_Widget {
 
     function form( $instance ) {
     	$defaults = array(
-	        'colorpage' => get_bloginfo( 'url' ),
 	        'title' => __('Color Search', 'cpg')
 	    );
 	    $title = isset( $instance[ 'title' ] ) ? $instance[ 'title' ] : $defaults['title'];
-	    $colorpage = isset( $instance[ 'colorpage' ] ) ? $instance[ 'colorpage' ] : $defaults['colorpage'];
 	?>
 	    <p>
 	        <label for="<?php echo $this->get_field_id( 'title' ); ?>">
@@ -33,29 +31,12 @@ class CPG_Widget extends WP_Widget {
 	        	name="<?php echo $this->get_field_name( 'title' ); ?>"
 	        	value="<?php echo esc_attr( $title ); ?>"
         	/>
-
-	        <label for="<?php echo $this->get_field_id( 'colorpage' ); ?>">
-	        	<?php _e( 'Colorsearch page', 'cpg' );?>:
-        	</label>
-	        <input
-	        	class="widefat"
-	        	type="url"
-	        	id="<?php echo $this->get_field_id( 'colorpage' ); ?>"
-	        	name="<?php echo $this->get_field_name( 'colorpage' ); ?>"
-	        	value="<?php echo esc_attr( $colorpage ); ?>"
-        	/>
-	        <small>
-	        	<?php _e( 'Don\'t forget to add the', 'cpg' ); ?>
-	        	<code>[colorsearch]</code>
-	        	<?php _e( 'shortcode to this page', 'cpg' ); ?>
-        	</small>
 	    </p>
 	<?php
     }
 
     function update( $new_instance, $old_instance ) {
     	$instance = $old_instance;
-	    $instance[ 'colorpage' ] = strip_tags( $new_instance[ 'colorpage' ] );
 	    $instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
 	    return $instance;
     }
@@ -73,7 +54,7 @@ class CPG_Widget extends WP_Widget {
 			?>
 				<li class="cpg-widget__color-item">
 					<a
-						href="<?php echo rtrim($instance['colorpage'], '/'); ?>/color/<?php echo $name; ?>/"
+						href="<?php echo rtrim(get_bloginfo( 'url' ), '/'); ?>/color/<?php echo $name; ?>/"
 						class="cpg-widget__color-link"
 						style="background-color: #<?php echo $code; ?>"
 						data-title="<?php echo str_replace('-', ' ', $name); ?>"

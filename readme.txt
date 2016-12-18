@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Color Palette Generator ===
 Contributors: houkedekwant
 Donate link: http://nl.linkedin.com/in/houkedekwant
 Tags: color palette, color palette generator, image, images, color, colour, colour palette, palette, attachments
@@ -63,9 +63,11 @@ Manual Installation:
 * Better uninstall functions (attachment meta needs to be removed)
 * Generate palette on upload
 
-== Upgrade Notice ==
-
 == Changelog ==
+
+= 1.0 =
+
+* First official release
 
 = 0.9 =
 
