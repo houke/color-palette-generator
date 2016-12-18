@@ -46,6 +46,8 @@ Manual Installation:
 
 ## Screenshots ##
 
+[Available here](https://github.com/houke/color-palette-generator/tree/master/screenshots)
+
 1. The Color palette generator settings page
 2. A new media library column will be available
 3. When inserting images into your content, new options will be available
