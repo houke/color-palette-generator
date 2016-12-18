@@ -173,8 +173,9 @@ jQuery(document).on('ready', function() {
          			jQuery('.cpg__inside--generate').html(cpg.done);
          			jQuery('.cpg-hndle small').remove();
          		}
-     			jQuery('[data-with]').html( parseInt(jQuery('[data-with]').html()) + 1);
-     			jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
+         		jQuery('.cpg__stats--hidden').removeClass('cpg__stats--hidden');
+     			jQuery('[data-excluded]').html( parseInt(jQuery('[data-excluded]').html()) + 1);
+     			jQuery('[data-without]').html( parseInt(jQuery('[data-without]').html() - 1) );
          	},
          	error: function (jqXHR, exception) {
 		        var msg = cpg_showErrors(jqXHR, exception);
@@ -217,7 +218,7 @@ jQuery(document).on('ready', function() {
 	         		}else{
 	         			jQuery('[data-with]').html( parseInt(jQuery('[data-with]').html()) + 1);
 	         		}
-         			jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html()));
+         			jQuery('[data-without]').html( parseInt(jQuery('[data-total]').html() - jQuery('[data-with]').html() - jQuery('[data-excluded]').html() ) );
 	         	},
 	         	error: function (jqXHR, exception) {
 			        var msg = cpg_showErrors(jqXHR, exception);

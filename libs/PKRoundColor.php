@@ -7,9 +7,8 @@
 
 class PKRoundColor {
 
-
 	protected $searchcolors;
-    protected $baseColors;
+	protected $baseColors;
 
     function __construct() {
     	$this->searchcolors = cpg_return_colors();

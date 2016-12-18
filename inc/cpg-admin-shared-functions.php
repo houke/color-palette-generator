@@ -394,7 +394,7 @@
 	}
 
 	//Show # of images with a palette
-	function cpg_img_count( $palette = false ){
+	function cpg_img_count( $palette = false, $excluded = false ){
         $query_img_args = array(
 	        'post_type' => 'attachment',
 	        'post_mime_type' =>array(
@@ -412,6 +412,16 @@
 	            'terms'    => get_terms( 'cpg_dominant_color', array( 'fields' => 'ids'  ) ),
 	            'operator'	=> 'IN'
 	        );
+        }
+
+        if( $excluded ){
+        	$query_img_args['meta_query'] = array(
+        		array(
+			    	'key' => 'cpg_exclude',
+			    	'value' => 'true',
+			    	'compare' => 'LIKE'
+			    )
+			);
         }
         $query_img = new WP_Query( $query_img_args );
         return $query_img->post_count;

@@ -60,7 +60,7 @@ Manual Installation:
 
 = TODO =
 
-* Make browser compatible (Promises don't work in IE)
+* Better uninstall functions (attachment meta needs to be removed)
 * Generate palette on upload
 
 == Upgrade Notice ==

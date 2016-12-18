@@ -238,6 +238,7 @@ function cpg_settings_page(){
 	}
 	$total = cpg_img_count();
 	$with = cpg_img_count( true );
+	$excluded = cpg_img_count( false, true );
 	$options = get_option('cpg_options');
 	$colors = isset( $options['colors'] ) ? $options['colors'] : 10;
 	$edit_colors = isset( $options['edit_colors'] ) ? $options['edit_colors'] : false;
@@ -282,7 +283,7 @@ function cpg_settings_page(){
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle">
 							<span><?php _e( 'Bulk generator', 'cpg' ); ?> (<span data-with><?php echo $with; ?></span> / <span data-total><?php echo $total; ?></span>)</span>
-							<?php if($total != $with){ ?>
+							<?php if($total - $excluded != $with){ ?>
 								<small>
 									<?php _e( 'Generate individual palettes via your', 'cpg' ); ?>
 									<a href="<?php echo get_admin_url(null, 'upload.php'); ?>">
@@ -293,7 +294,7 @@ function cpg_settings_page(){
 						</h2>
 						<div class="inside cpg__inside cpg__inside--btn cpg__inside--generate">
 							<p>
-								<?php if( $total - $with == 0 ) { ?>
+								<?php if( $total - $with - $excluded == 0 ) { ?>
 									<?php _e( 'All images have a palette. Well done!', 'cpg' ); ?>
 								<?php } else { $img = get_attachment_without_colors(); ?>
 									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&post_id='.$img['id'].'&_wpnonce=' . wp_create_nonce( 'cpg_bulk_generate_palette_'.$img['id'].'_nonce' ); ?>&colors=<?php echo $colors; ?>&regenerate=false" class="button cpg-button-bulk" data-src="<?php echo $img['src']; ?>">
@@ -401,8 +402,12 @@ function cpg_settings_page(){
 								<?php _e( 'With palette', 'cpg' ); ?>
 							</p>
 							<p class="cpg__stats">
-								<span data-without><?php echo $total-$with; ?></span>
+								<span data-without><?php echo $total-$with-$excluded; ?></span>
 								<?php _e( 'Without palette', 'cpg' ); ?>
+							</p>
+							<p class="cpg__stats--full <?php if( $excluded < 1 ) { ?>cpg__stats--hidden<?php } ?>">
+								<span data-excluded><?php echo $excluded; ?></span>
+								<?php _e( 'skipped due to error', 'cpg'); ?>
 							</p>
 						</div>
 					</div>

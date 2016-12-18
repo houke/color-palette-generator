@@ -47,3 +47,7 @@ require_once CPG_DIR . 'inc/cpg-admin-ajax.php';
 require_once CPG_DIR . 'inc/cpg-admin-widget.php';
 require_once CPG_DIR . 'inc/cpg-admin-search-rewrites.php';
 require_once CPG_DIR . 'inc/cpg-frontend-show-palette-on-attachment.php';
+require_once CPG_DIR . 'inc/cpg-uninstall.php';
+
+//cleanup when uninstalling
+register_uninstall_hook(__FILE__, 'cpg_uninstall');
