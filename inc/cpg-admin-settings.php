@@ -161,7 +161,7 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 
 	if( $cpg_settings['cpg_show'] ){
 		$cpg_show_dominant = $cpg_settings['cpg_show_dominant'] == 1 ? 'true' : 'false';
-		$cpg_number_of_colors = $cpg_settings['cpg_number_of_colors'];
+		$cpg_number_of_colors = ( isset( $cpg_settings['cpg_number_of_colors'] ) && $cpg_settings['cpg_number_of_colors'] > 0 ) ? $cpg_settings['cpg_number_of_colors'] : 10;;
 		$atts = array(
 			'attachment' => $id,
 			'dominant' => $cpg_show_dominant,
