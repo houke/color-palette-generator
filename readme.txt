@@ -5,10 +5,10 @@ Tags: color palette, color palette generator, image, images, color, colour, colo
 Requires at least: 4.0
 Tested up to: 4.7
 Stable tag: trunk
-License: GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: cpg
 Domain Path: /languages
+License: GPL2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin generates color palettes for your WordPress images and appends them to your content.
 
