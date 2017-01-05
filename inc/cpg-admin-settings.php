@@ -92,7 +92,7 @@ function cpg_add_media_edit_fields( $form_fields, $post ) {
     	'cpg_number_of_colors' => get_post_meta( $post->ID, '_cpg_number_of_colors', true )
     );
 	$cpg_options = get_option( 'cpg_options' );
-	$cpg_num_options = get_option(' cpg_options' );
+	$cpg_num_options = isset( $cpg_options['colors'] ) ? $cpg_options['colors'] : 10;
 
 	$cpg_show_checked = (
 			isset( $cpg_settings['cpg_show'] ) &&
@@ -106,9 +106,9 @@ function cpg_add_media_edit_fields( $form_fields, $post ) {
 
  	$cpg_number_of_colors = (
  			isset( $cpg_settings['cpg_number_of_colors'] ) &&
- 			$cpg_settings['cpg_number_of_colors'] <= $cpg_num_options['colors'] &&
+ 			$cpg_settings['cpg_number_of_colors'] <= $cpg_num_options &&
  			$cpg_settings['cpg_number_of_colors'] > 0
-		)  ? $cpg_settings['cpg_number_of_colors'] : $cpg_num_options['colors'];
+		)  ? $cpg_settings['cpg_number_of_colors'] : $cpg_num_options;
 
 	$fields = array(
 		'cpg_show' => array(
