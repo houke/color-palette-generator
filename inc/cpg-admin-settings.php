@@ -136,7 +136,7 @@ function cpg_add_media_edit_fields( $form_fields, $post ) {
 			'application' => 'image',
        	 	'show_in_edit' => false,
 	        'input' => 'html',
-	        'html' => '<input type="number" value="'.$cpg_number_of_colors.'" min="1" max="'.$cpg_num_options['colors'].'"
+	        'html' => '<input type="number" value="'.$cpg_number_of_colors.'" min="1" max="'.$cpg_num_options.'"
 	    					name="attachments['.$post->ID.'][cpg_number_of_colors]"
 	    					id="cpg-palette-colors" />',
         	'exclusions'   => array( 'audio', 'video' )
@@ -161,7 +161,7 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 
 	if( $cpg_settings['cpg_show'] ){
 		$cpg_show_dominant = $cpg_settings['cpg_show_dominant'] == 1 ? 'true' : 'false';
-		$cpg_number_of_colors = ( isset( $cpg_settings['cpg_number_of_colors'] ) && $cpg_settings['cpg_number_of_colors'] > 0 ) ? $cpg_settings['cpg_number_of_colors'] : 10;;
+		$cpg_number_of_colors = $cpg_settings['cpg_number_of_colors'];
 		$atts = array(
 			'attachment' => $id,
 			'dominant' => $cpg_show_dominant,
@@ -408,20 +408,6 @@ function cpg_settings_page(){
 							<p class="cpg__stats--full <?php if( $excluded < 1 ) { ?>cpg__stats--hidden<?php } ?>">
 								<span data-excluded><?php echo $excluded; ?></span>
 								<?php _e( 'skipped due to error', 'cpg'); ?>
-							</p>
-						</div>
-					</div>
-
-					<div id="cpg-use-cases" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle"><span><?php _e('Brought to you by TheArtHunters.com', 'cpg'); ?></span></h2>
-						<div class="inside">
-							<a href="https://www.thearthunters.com/" target="__blank">
-								<img src="<?php echo CPG_URL; ?>assets/img/tah.jpg" alt="TheArtHunters"/>
-							</a>
-							<p><a href="https://www.thearthunters.com/color/red/" target="_blank">&raquo; <?php _e( 'Example: artworks per color', 'cpg' ); ?></a></p>
-							<p><a href="https://www.thearthunters.com/new-movie-posters-star-wars-rogue-one/" target="_blank">&raquo; <?php _e( 'Example: palette per image', 'cpg' ); ?></a></p>
-							<p>
-								<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQPYCAHS5WXZE" target="_blank">&raquo; <?php _e('Buy us a cup of coffee', 'cpg'); ?></a>
 							</p>
 						</div>
 					</div>
