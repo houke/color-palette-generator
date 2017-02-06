@@ -46,13 +46,15 @@ Manual Installation:
 
 ## Screenshots ##
 
-[Available here](https://github.com/houke/color-palette-generator/tree/master/screenshots)
+![The Color palette generator settings page](https://raw.githubusercontent.com/houke/color-palette-generator/master/screenshots/1.jpg)
 
-1. The Color palette generator settings page
-2. A new media library column will be available
-3. When inserting images into your content, new options will be available
-4. Add a widget to your sidebar
-5. The palette in use
+![A new media library column will be available](https://raw.githubusercontent.com/houke/color-palette-generator/master/screenshots/2.jpg)
+
+![When inserting images into your content, new options will be available](https://raw.githubusercontent.com/houke/color-palette-generator/master/screenshots/3.jpg)
+
+![Add a widget to your sidebar](https://raw.githubusercontent.com/houke/color-palette-generator/master/screenshots/4.jpg)
+
+![The palette in use](https://raw.githubusercontent.com/houke/color-palette-generator/master/screenshots/5.jpg)
 
 ## Todo ##
 
