@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Color Palette Generator
-Plugin URI: https://github.com/houke/color-palette-generator
+Plugin URI: https://www.thearthunters.com/color-palette-generator-wordpress/
 Description: Generates color palettes for your media uploads (jpg, png, gif), shows them on your website and allows you to filter images per color
 Version: 1.2
 Author: Houke de Kwant
@@ -10,6 +10,8 @@ Text Domain: cpg
 Domain Path: /languages
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+GitHub Plugin URI: https://github.com/houke/color-palette-generator
+GitHub Branch: master
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
