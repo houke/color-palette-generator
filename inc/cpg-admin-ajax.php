@@ -6,9 +6,9 @@ add_action( 'wp_ajax_cpg_add_palette', 'cpg_add_palette' );
 function cpg_add_palette() {
 	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
-		$dominant = isset( $_POST['dominant'] ) ? $_POST['dominant'] : "";
-		$palette = isset( $_POST['palette'] ) ? $_POST['palette'] : "";
-		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+		$dominant = isset( $_POST['dominant'] ) ? sanitize_text_field( $_POST['dominant'] ) : "";
+		$palette = isset( $_POST['palette'] ) ? array_map( 'sanitize_text_field', $_POST['palette'] ) : "";
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : "" ;
 
 		$PKR = new PKRoundColor();
 		$parent = $PKR->getRoundedColor($dominant);
@@ -40,7 +40,7 @@ add_action( 'wp_ajax_cpg_trash_palette', 'cpg_trash_palette' );
 function cpg_trash_palette() {
 	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
-		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : "" ;
 
 		if(
 			get_post_type( $post_id ) == 'attachment' &&
@@ -65,7 +65,7 @@ add_action( 'wp_ajax_cpg_exclude_bulk', 'cpg_exclude_bulk' );
 function cpg_exclude_bulk(){
 	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
-		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : "" ;
 
 		if(
 			get_post_type( $post_id ) == 'attachment' &&
@@ -98,10 +98,10 @@ add_action( 'wp_ajax_cpg_bulk_add_palette', 'cpg_bulk_add_palette' );
 function cpg_bulk_add_palette() {
 	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
-		$dominant = isset( $_POST['dominant'] ) ? $_POST['dominant'] : "";
-		$palette = isset( $_POST['palette'] ) ? $_POST['palette'] : "";
-		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
-		$regenerate = isset( $_POST['regenerate'] ) ? $_POST['regenerate'] : false;
+		$dominant = isset( $_POST['dominant'] ) ? sanitize_text_field( $_POST['dominant'] ) : "";
+		$palette = isset( $_POST['palette'] ) ? array_map( 'sanitize_text_field', $_POST['palette'] ) : "";
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : "" ;
+		$regenerate = isset( $_POST['regenerate'] ) ? wp_validate_boolean( $_POST['regenerate'] ) : false;
 
 		if( $regenerate == true && wp_verify_nonce( $nonce, 'cpg_bulk_regenerate_palette_nonce' ) ) {
 			cpg_setup_taxonomies( true );
@@ -147,30 +147,6 @@ function cpg_bulk_add_palette() {
 				$output = '<span style="color:#f00;">' . __( 'Something went wrong', 'cpg' ) . '</span>';
 				echo json_encode( $output );
 			}
-		}
-
-	}
-    wp_die();
-}
-
-//Make it possible for users to edit the color table
-add_action( 'wp_ajax_cpg_edit_color_table', 'cpg_edit_color_table' );
-function cpg_edit_color_table() {
-	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-		$options = get_option('cpg_options');
-		$option_to_update = $options['color_table'];
-		$color_table = isset( $_POST['color_table'] ) ? $_POST['color_table'] : "";
-		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : "" ;
-
-		if(
-			$color_table != '' &&
-			wp_verify_nonce( $nonce, 'cpg_update_color_table_'.$post_id.'_nonce' )
-		) {
-			var_dump($color_table);
-			echo json_encode( $output );
-		}else{
-			$output = '<span style="color:#f00;">' . __( 'Something went wrong', 'cpg' ) . '</span>';
-			echo json_encode( $output );
 		}
 
 	}

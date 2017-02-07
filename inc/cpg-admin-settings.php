@@ -181,7 +181,7 @@ function add_our_attachment_meta(){
 	$options = get_option('cpg_options');
 	if(
 		isset( $_GET['post'] ) &&
-		wp_attachment_is_image( $_GET['post'] ) &&
+		wp_attachment_is_image( intval($_GET['post']) ) &&
 		isset( $options['show_on_attachment'] ) &&
 		$options['show_on_attachment'] == 'true'
 	){
@@ -213,14 +213,14 @@ function cpg_attachment_meta_box_callback(){
 
 //Save palette options to image insert
 function cpg_add_media_edit_fields_save( $post, $attachment ) {
-    $show_value = isset( $attachment['cpg_show'] ) ? $attachment['cpg_show'] : '0';
+    $show_value = isset( $attachment['cpg_show'] ) ? sanitize_text_field( $attachment['cpg_show']) : '0';
     update_post_meta( $post['ID'], '_cpg_show', $show_value );
 
     if($show_value == '1'){
-    	$show_dominant = isset( $attachment['cpg_show_dominant'] ) ? $attachment['cpg_show_dominant'] : "0";
+    	$show_dominant = isset( $attachment['cpg_show_dominant'] ) ? sanitize_text_field( $attachment['cpg_show_dominant']) : "0";
     	update_post_meta( $post['ID'], '_cpg_show_dominant', $show_dominant );
     	$num_options = get_option( 'cpg_options' );
-    	$num_colors = isset( $attachment['cpg_number_of_colors'] ) && $attachment['cpg_number_of_colors'] < $num_options['colors'] ? $attachment['cpg_number_of_colors'] : $num_options['colors'];
+    	$num_colors = isset( $attachment['cpg_number_of_colors'] ) && $attachment['cpg_number_of_colors'] < $num_options['colors'] ? sanitize_text_field( $attachment['cpg_number_of_colors'] ) : $num_options['colors'];
     	update_post_meta( $post['ID'], '_cpg_number_of_colors', $num_colors );
     }
 
@@ -250,28 +250,28 @@ function cpg_settings_page(){
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<div id="post-body-content">
-					<?php if( isset( $_GET['action'] ) && $_GET['action'] != '' ){ ?>
+					<?php if( isset( $_GET['action'] ) && sanitize_text_field($_GET['action']) != '' ){ ?>
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e('Error', 'cpg'); ?></h2>
 						<div class="inside">
 							<p>
 								<?php _e('Something went wrong. You probably landed here because of a javascript error. Make sure your javascript is enabled, this plugin will not work without it.', 'cpg'); ?>
-								<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
+								<a href="<?php echo esc_url(get_admin_url(null, 'upload.php?page='.CPG_NAME)); ?>">
 									<?php _e('Click here to refresh.', 'cpg'); ?>
 								</a>
 							</p>
 						</div>
 					</div>
 
-					<?php }elseif( isset( $_GET['reset'] ) && $_GET['reset'] == 'true'  ){ ?>
+					<?php }elseif( isset( $_GET['reset'] ) && sanitize_text_field($_GET['reset']) == 'true'  ){ ?>
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e('Reset successful', 'cpg'); ?></h2>
 						<div class="inside">
 							<p>
 								<?php _e('The color table has been reset successfully. The colors initially added by this plugin are now your default colors again. If you generated the palettes with altered colors and you no longer want to use them, be sure to regenereate all your palettes.', 'cpg'); ?>
-								<a href="<?php echo get_admin_url(null, 'upload.php?page='.CPG_NAME); ?>">
+								<a href="<?php echo esc_url(get_admin_url(null, 'upload.php?page='.CPG_NAME)); ?>">
 									<?php _e('Click here to see your color table.', 'cpg'); ?>
 								</a>
 							</p>
@@ -282,11 +282,11 @@ function cpg_settings_page(){
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle">
-							<span><?php _e( 'Bulk generator', 'cpg' ); ?> (<span data-with><?php echo $with; ?></span> / <span data-total><?php echo $total; ?></span>)</span>
+							<span><?php _e( 'Bulk generator', 'cpg' ); ?> (<span data-with><?php echo esc_html($with); ?></span> / <span data-total><?php echo esc_html($total); ?></span>)</span>
 							<?php if($total - $excluded != $with){ ?>
 								<small>
 									<?php _e( 'Generate individual palettes via your', 'cpg' ); ?>
-									<a href="<?php echo get_admin_url(null, 'upload.php'); ?>">
+									<a href="<?php echo esc_url(get_admin_url(null, 'upload.php')); ?>">
 										<?php _e( 'Media Library', 'cpg' ); ?>
 									</a>
 								</small>
@@ -329,7 +329,7 @@ function cpg_settings_page(){
 							settings_fields( 'cpg_options' );
 							do_settings_sections( 'cpg_settings_page' );
 						?>
-						<div class="cpg-wrap cpg-wrap--<?php echo $edit_colors ? 'visible' : 'hidden'; ?>">
+						<div class="cpg-wrap cpg-wrap--<?php echo esc_attr($edit_colors) ? 'visible' : 'hidden'; ?>">
 							<table class="cpg-color-table">
 								<thead>
 									<tr>
@@ -360,18 +360,18 @@ function cpg_settings_page(){
 										<tr>
 											<td>
 												<div class="cpg-color__main-color">
-													<input type="text" maxlength="7" style="background-color: <?php echo $code; ?>" value="<?php echo $code; ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo $name_in_array; ?>][code]"/>
+													<input type="text" maxlength="7" style="background-color: <?php echo esc_attr( $code ); ?>" value="<?php echo esc_attr( $code ); ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo esc_attr( $name_in_array ); ?>][code]"/>
 												</div>
 												<div class="row-actions">
 													<span class="trash"><a href="#"><?php _e('Trash row', 'cpg'); ?></a></span>
 												</div>
 											</td>
-											<td><input type="text" value="<?php echo $name; ?>" name="cpg_options[color_table][<?php echo $name_in_array; ?>][name]" class="cpg-color-name"/></td>
+											<td><input type="text" value="<?php echo esc_attr( $name ); ?>" name="cpg_options[color_table][<?php echo esc_attr( $name_in_array ); ?>][name]" class="cpg-color-name"/></td>
 											<td>
 												<div class="cpg-color-table__colors">
 												<?php foreach ($tints as $tint) { $tint = '#'.$tint; ?>
 													<div class="cpg-color-table__div">
-														<input type="text" style="background-color: <?php echo $tint; ?>"  value="<?php echo $tint; ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo $name_in_array; ?>][tints][]" />
+														<input type="text" style="background-color: <?php echo esc_attr( $tint ); ?>"  value="<?php echo esc_attr( $tint ); ?>" class="cpg-color-picker" name="cpg_options[color_table][<?php echo esc_attr( $name_in_array ); ?>][tints][]" />
 														<button class="cpg-delete-color">&times;</button>
 													</div>
 												<?php } ?>
@@ -394,19 +394,19 @@ function cpg_settings_page(){
 						<h2 class="hndle cpg-hndle"><span><?php _e( 'Stats', 'cpg' ); ?></span></h2>
 						<div class="inside cpg__inside">
 							<p class="cpg__stats <?php if( $total > 100000 ) { ?>cpg__stats--small<?php } ?>">
-								<span data-total><?php echo $total; ?></span>
+								<span data-total><?php echo esc_html( $total ); ?></span>
 								<?php _e( 'Total images', 'cpg' ); ?>
 							</p>
 							<p class="cpg__stats">
-								<span data-with><?php echo $with; ?></span>
+								<span data-with><?php echo esc_html( $with ); ?></span>
 								<?php _e( 'With palette', 'cpg' ); ?>
 							</p>
 							<p class="cpg__stats">
-								<span data-without><?php echo $total-$with-$excluded; ?></span>
+								<span data-without><?php echo esc_html( $total-$with-$excluded ); ?></span>
 								<?php _e( 'Without palette', 'cpg' ); ?>
 							</p>
 							<p class="cpg__stats--full <?php if( $excluded < 1 ) { ?>cpg__stats--hidden<?php } ?>">
-								<span data-excluded><?php echo $excluded; ?></span>
+								<span data-excluded><?php echo esc_html( $excluded ); ?></span>
 								<?php _e( 'skipped due to error', 'cpg'); ?>
 							</p>
 						</div>
@@ -428,7 +428,7 @@ function cpg_register_default_settings(){
 	add_option( 'cpg_options', $default_opts );
 
     $args = array(
-        'public' => false,
+        'public' => true,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false,
         'hierarchical' => true

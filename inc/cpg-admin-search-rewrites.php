@@ -25,8 +25,8 @@
 
 	function cpg_search_filter( $query ) {
 	 	if ( !is_admin() && $query->is_main_query() && $query->is_search ) {
- 			$search = get_query_var( 's' );
- 			$color = get_query_var( 'color' );
+ 			$search = esc_html(get_query_var( 's' ));
+ 			$color = esc_html(get_query_var( 'color' ));
  			$colors = cpg_return_colors();
  			$check_search = explode('/', $search);
  			$cl = "";
@@ -83,8 +83,8 @@
 	add_action( 'pre_get_posts', 'cpg_search_filter' );
 
 	function cpg_filter_title($title) {
-		$search = get_query_var( 's' );
-		$color = get_query_var( 'color' );
+		$search = esc_html(get_query_var( 's' ));
+		$color = esc_html(get_query_var( 'color' ));
 		$colors = cpg_return_colors();
 		$check_search = explode('/', $search);
 

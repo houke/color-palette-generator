@@ -15,7 +15,7 @@ function cpg_prepend_attachment( $attachment_content ){
 			$dominant = $colors[0];
 			$parent = get_term( $dominant->parent, 'cpg_dominant_color' );
 	    	$dominant = $dominant->name;
-	    	$output .= '<a href="'.get_bloginfo( 'url' ).'/color/'.$parent->description.'" class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></a>';
+	    	$output .= '<a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($dominant).';" data-title="Dominant: '.esc_attr($dominant).'"></a>';
 	    }
 
 		if( $palette ){
@@ -26,7 +26,7 @@ function cpg_prepend_attachment( $attachment_content ){
 					$color = $color->name;
 				}
 
-				$output .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.$color.';" data-title="'.$color.'"></li>';
+				$output .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></li>';
 			}
 			$output .= '</ul>';
 		}

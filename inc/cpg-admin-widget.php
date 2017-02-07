@@ -1,8 +1,6 @@
 <?php
 class CPG_Widget extends WP_Widget {
 
-	protected $PKR;
-
     function __construct() {
     	parent::__construct(
 	        'cpg_search_widget',
@@ -54,12 +52,12 @@ class CPG_Widget extends WP_Widget {
 			?>
 				<li class="cpg-widget__color-item">
 					<a
-						href="<?php echo rtrim(get_bloginfo( 'url' ), '/'); ?>/color/<?php echo $name; ?>/"
+						href="<?php echo esc_url( rtrim(get_bloginfo( 'url' ), '/') . '/color/' . $name .'/'); ?>"
 						class="cpg-widget__color-link"
-						style="background-color: #<?php echo $code; ?>"
-						data-title="<?php echo str_replace('-', ' ', $name); ?>"
+						style="background-color: #<?php echo esc_attr( $code ); ?>"
+						data-title="<?php echo esc_attr( str_replace('-', ' ', $name) ); ?>"
 					>
-						<?php echo $name; ?>
+						<?php echo esc_html($name); ?>
 					</a>
 				</li>
 			<?php } ?>

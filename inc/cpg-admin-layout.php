@@ -124,7 +124,6 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 }
 add_action( 'admin_enqueue_scripts', 'cpg_load_custom_wp_admin_scripts' );
 
-
 function cpg_enqueue_scripts() {
 	if( !is_admin() ) {
 
