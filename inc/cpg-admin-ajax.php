@@ -6,7 +6,7 @@ add_action( 'wp_ajax_cpg_add_palette', 'cpg_add_palette' );
 function cpg_add_palette() {
 	if ( is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$post_id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : "";
-		$dominant = isset( $_POST['dominant'] && ) ? sanitize_text_field( $_POST['dominant'] ) : "";
+		$dominant = isset( $_POST['dominant'] ) ? sanitize_text_field( $_POST['dominant'] ) : "";
 		$palette = isset( $_POST['palette'] ) ? array_map( 'sanitize_text_field', $_POST['palette'] ) : "";
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : "" ;
 
