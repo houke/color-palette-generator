@@ -53,6 +53,7 @@ Manual Installation:
 3. When inserting images into your content, new options will be available
 4. Add a widget to your sidebar
 5. The palette in use
+6. A list of generated palettes
 
 ## Todo ##
 
@@ -60,6 +61,10 @@ Manual Installation:
 * Generate palette on upload
 
 ## Changelog ##
+
+### 1.4 ###
+
+* Added new shortcode to show all generate palettes (without the images)
 
 ### 1.3 ###
 

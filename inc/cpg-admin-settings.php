@@ -312,7 +312,7 @@ function cpg_settings_page(){
 					</div>
 
 					<div id="cpg-stats" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcode', 'cpg' ); ?></h2>
+						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcodes', 'cpg' ); ?></h2>
 						<div class="inside cpg__inside cpg__inside--btn">
 							<p><?php _e('To show individual images within a post, use the following shortcode (or enter the required options while adding images)', 'cpg'); ?>: <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
 							<ul>
@@ -320,6 +320,13 @@ function cpg_settings_page(){
 								<li><?php _e('dominant: whether you want to show the dominant color or not', 'cpg'); ?></li>
 								<li><?php _e('colors: the number of colors you want to show', 'cpg'); ?></li>
 								<li><?php _e('size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)', 'cpg'); ?></li>
+							</ul>
+							<br/><br/>
+							<p><?php _e('To show generated palettes, without the images use the following shortcode', 'cpg'); ?>: <pre><code>[colorpalettes attachments="21, 28, 32" colors="5"]</code></pre> <?php _e('To show all palettes, simply use', 'cpg'); ?> <pre><code>[colorpalettes]</code></pre></p>
+							<ul>
+								<li><?php _e('attachments: the ids of the images of which you want to show the palettes. Leave empty to show the palettes of all images', 'cpg'); ?></li>
+								<li><?php _e('colors: the number of colors you want to show, default to the number of colors you\'ve defined above', 'cpg'); ?></li>
+								<li><?php _e('total: the maximum number of palettes you want to show, by default, all palettes are shown', 'cpg'); ?></li>
 							</ul>
 						</div>
 					</div>
@@ -502,12 +509,85 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 		}
 		$content .= '</div>';
 	}else{
-		$content = "<p>Attachment doesn't exist or isn't an image</p>";
+		$content = "<p>".__( "Attachment doesn't exist or isn't an image", "cpg"). "</p>";
 	}
 
 	return $content;
 }
 add_shortcode( 'colorpalette', 'cpg_colorpalette_shortcode' );
+
+function cpg_colorpalettes_shortcode( $atts ) {
+
+	$options = get_option('cpg_options');
+	$colors = isset( $options['colors'] ) ? $options['colors'] : 10;
+	$content = '<div class="cpg__palette-holder">';
+
+	$atts = shortcode_atts( array(
+		'attachments' => '',
+		'colors' => $colors,
+		'orderby' => 'post_date',
+		'order' => 'DESC',
+		'total' => -1
+	), $atts, 'colorpalettes' );
+
+	$attachments = $atts['attachments'];
+	$colors = $atts['colors'];
+	$orderby = $atts['orderby'];
+	$order = $atts['order'];
+	$ppp = $atts['total'];
+
+	$terms = get_terms( array(
+    	'taxonomy' => 'cpg_dominant_color'
+    ) );
+
+	$args = array(
+		'post_type' => 'attachment',
+		'orderby' => $orderby,
+		'order' => $order,
+		'fields' => 'ids',
+		'posts_per_page' => $ppp,
+		'tax_query' => array(
+            array(
+                'taxonomy' => 'cpg_dominant_color',
+                'field' => 'slug',
+                'terms' => wp_list_pluck( $terms, 'slug' )
+            )
+        )
+	);
+
+	if( $attachments != '' ){
+		$args['post__in'] = explode(',', $attachments);
+	}
+
+	$attachments = get_posts( $args );
+
+	if( $attachments ){
+		wp_enqueue_style( 'cpg-frontend-styles-css' );
+		foreach ($attachments as $attachment) {
+			$content .= '<ul class="cpg__palette-list">';
+			$palette = get_the_terms( $attachment, 'cpg_palette' );
+			shuffle( $palette );
+			foreach ( $palette as $i => $color ) {
+				if ( $i == $atts['colors'] ){
+   					break;
+				}
+
+				if( is_object( $color ) ){
+					$color = $color->name;
+				}
+				$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.$color.';" data-title="'.$color.'"></li>';
+			}
+			$content .= '</ul>';
+		}
+	}else{
+		$content .= '<p>' . __( "You don't have any palettes. Start generating them in your media library.", "cpg" ) . '</p>';
+	}
+
+	$content .= '</div>';
+
+	return $content;
+}
+add_shortcode( 'colorpalettes', 'cpg_colorpalettes_shortcode' );
 
 //Register taxonomies on install
 function cpg_install(){

@@ -20,6 +20,10 @@
     flex-wrap: wrap;
 }
 
+.cpg__palette-holder .cpg__palette-list + .cpg__palette-list{
+	margin-top: 20px;
+}
+
 .cpg__palette-holder .cpg__palette-list:before,
 .cpg__palette-holder .cpg__palette-list:after{
 	content: "";

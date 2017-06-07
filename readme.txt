@@ -3,13 +3,13 @@ Contributors: houkedekwant
 Donate link: https://github.com/houke/
 Tags: color palette, color palette generator, image, images, color, colour, colour palette, palette, attachments
 Requires at least: 4.0
-Tested up to: 4.7.2
+Tested up to: 4.8.0
 Stable tag: trunk
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: cpg
 Domain Path: /languages
-Version: 1.3
+Version: 1.4
 
 This plugin generates color palettes for your WordPress images and appends them to your content.
 
@@ -63,10 +63,15 @@ Manual Installation:
 3. When inserting images into your content, new options will be available
 4. Add a widget to your sidebar
 5. The palette in use
+6. A list of generated palettes
 
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.4 =
+
+* Added new shortcode to show all generate palettes (without the images)
 
 = 1.3 =
 
