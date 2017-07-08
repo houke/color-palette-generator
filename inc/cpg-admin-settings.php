@@ -500,7 +500,6 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 	$att_id = $atts['attachment'];
 
 	if( $att_id != '' && wp_attachment_is_image( $att_id ) && file_exists( get_attached_file( $att_id ) ) ){
-		wp_enqueue_style( 'cpg-frontend-styles-css' );
 		$img = wp_get_attachment_image( $att_id, $atts['size'] );
 		$img = wp_make_content_images_responsive($img);
 
@@ -536,7 +535,7 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 					$parent = $PKR->getRoundedColor($color);
 					$parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
 
-					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></a></li>';
+					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="Dominant: '.esc_attr($color).'"></a></li>';
 		    	}else{
 		    		$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></li>';
 		    	}
@@ -606,7 +605,6 @@ function cpg_colorpalettes_shortcode( $atts ) {
 	$attachments = get_posts( $args );
 
 	if( $attachments ){
-		wp_enqueue_style( 'cpg-frontend-styles-css' );
 		foreach ($attachments as $attachment) {
 			$content .= '<ul class="cpg__palette-list">';
 			$palette = get_the_terms( $attachment, 'cpg_palette' );

@@ -41,7 +41,6 @@ class CPG_Widget extends WP_Widget {
 
     function widget( $args, $instance ) {
 	    if ( is_active_widget( false, false, 'cpg_search_widget', true ) ) {
-	    	wp_enqueue_style( 'cpg-frontend-widget-styles-css' );
 	    	$predefined_colors = cpg_return_colors();
 	?>
 		<div class="widget cpg-widget">

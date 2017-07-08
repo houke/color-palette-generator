@@ -9,7 +9,7 @@ License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: cpg
 Domain Path: /languages
-Version: 1.5.1
+Version: 1.5.2
 
 This plugin generates color palettes for your WordPress images and appends them to your content.
 
@@ -68,6 +68,10 @@ Manual Installation:
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.5.2 =
+
+* Fixed loading of front-end styles
 
 = 1.5.1 =
 

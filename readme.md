@@ -62,6 +62,10 @@ Manual Installation:
 
 ## Changelog ##
 
+### 1.5.2 ###
+
+* Fixed loading of front-end styles
+
 ### 1.5.1 ###
 
 * Removed 'Dominant: ' title before color codes when hovering over palette colors.

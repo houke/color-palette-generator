@@ -131,11 +131,13 @@ function cpg_enqueue_scripts() {
 	    	'cpg-frontend-styles-css',
 	    	plugins_url( 'assets/css/cpg-frontend-styles.css', dirname(__FILE__) )
 		);
+	    wp_enqueue_style( 'cpg-frontend-styles-css' );
 
 		wp_register_style(
 	    	'cpg-frontend-widget-styles-css',
 	    	plugins_url( 'assets/css/cpg-frontend-widget-styles.css', dirname(__FILE__) )
 		);
+    	wp_enqueue_style( 'cpg-frontend-widget-styles-css' );
 		wp_register_style(
 	    	'cpg-frontend-search-page-styles-css',
 	    	plugins_url( 'assets/css/cpg-frontend-search-page-styles.css', dirname(__FILE__) )
