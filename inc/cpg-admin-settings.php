@@ -536,7 +536,7 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 					$parent = $PKR->getRoundedColor($color);
 					$parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
 
-					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="Dominant: '.esc_attr($color).'"></a></li>';
+					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></a></li>';
 		    	}else{
 		    		$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></li>';
 		    	}

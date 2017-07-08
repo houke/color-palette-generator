@@ -62,6 +62,10 @@ Manual Installation:
 
 ## Changelog ##
 
+### 1.5.1 ###
+
+* Removed 'Dominant: ' title before color codes when hovering over palette colors.
+
 ### 1.5 ###
 
 * Added 2 new settings to allow clicking the dominant & palette colors. Each color will link to the search page of the related dominant color.
