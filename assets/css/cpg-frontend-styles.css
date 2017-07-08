@@ -87,6 +87,15 @@
 	display: block;
 }
 
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item-helper:hover:before,
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item-helper:hover:after{
+	display: none;
+}
+
+.cpg__palette-holder .cpg__palette-list .cpg__palette-item-helper .cpg__dominant-color {
+	margin: 0;
+}
+
 .cpg-image{
 	padding: 10px;
 	border: 1px solid #eee;

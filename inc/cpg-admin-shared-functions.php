@@ -74,6 +74,7 @@
     	$colors = array();
 		foreach ($searchcolors as $name => $code) {
 			$tints = isset( $code['tints'] ) ? $code['tints'] : array();
+			array_push($tints, $code['code']);
 	    	$colors[$name] = str_replace('#', '', $tints);
 	    }
 

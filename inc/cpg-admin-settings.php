@@ -48,6 +48,20 @@ function cpg_register_settings() {
 		'cpg_options'
 	);
 	add_settings_field(
+		'cpg_make_fields_clickable',
+		'Should the palette colors link to the search page?',
+		'cpg_create_field_make_clickable',
+		'cpg_settings_page',
+		'cpg_options'
+	);
+	add_settings_field(
+		'cpg_make_dominant_clickable',
+		'Should the dominant color link to the search page?',
+		'cpg_create_field_dominant_clickable',
+		'cpg_settings_page',
+		'cpg_options'
+	);
+	add_settings_field(
 		'cpg_edit_colors',
 		'Create your own color filters?',
 		'cpg_create_field_color_filter',
@@ -72,6 +86,20 @@ function cpg_create_field_show_on_attachment() {
 	$checked = isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ? 'checked' : '';
 
 	echo '<input id="cpg_show_on_attachment" name="cpg_options[show_on_attachment]" type="checkbox" value="true" '.$checked.'/>';
+}
+
+function cpg_create_field_make_clickable() {
+	$options = get_option('cpg_options');
+	$checked = isset( $options['make_palette_clickable'] ) && $options['make_palette_clickable'] == 'true' ? 'checked' : '';
+
+	echo '<input id="cpg_make_fields_clickable" name="cpg_options[make_palette_clickable]" type="checkbox" value="true" '.$checked.'/><small>' . __('When checked, all palette colors will link to their nearest related search color. Search results are based on the dominant color of an artwork,  because there is only one such color per artwork, your image might not appear in the results when clicking a palette color. This is because the nearest related search color for the clicked color may not be the same as the dominant color of the image belonging to that palette.', 'cpg') . '</small>';
+}
+
+function cpg_create_field_dominant_clickable() {
+	$options = get_option('cpg_options');
+	$checked = isset( $options['make_dominant_clickable'] ) && $options['make_dominant_clickable'] == 'true' ? 'checked' : '';
+
+	echo '<input id="cpg_make_dominant_clickable" name="cpg_options[make_dominant_clickable]" type="checkbox" value="true" '.$checked.'/>';
 }
 
 function cpg_create_field_color_filter() {
@@ -321,11 +349,11 @@ function cpg_settings_page(){
 								<li><?php _e('colors: the number of colors you want to show', 'cpg'); ?></li>
 								<li><?php _e('size: the format of the artwork you want to show (thumbnail, medium and large are WordPress defaults)', 'cpg'); ?></li>
 							</ul>
-							<br/><br/>
+							<br/>
 							<p><?php _e('To show generated palettes, without the images use the following shortcode', 'cpg'); ?>: <pre><code>[colorpalettes attachments="21, 28, 32" colors="5"]</code></pre> <?php _e('To show all palettes, simply use', 'cpg'); ?> <pre><code>[colorpalettes]</code></pre></p>
 							<ul>
 								<li><?php _e('attachments: the ids of the images of which you want to show the palettes. Leave empty to show the palettes of all images', 'cpg'); ?></li>
-								<li><?php _e('colors: the number of colors you want to show, default to the number of colors you\'ve defined above', 'cpg'); ?></li>
+								<li><?php _e('colors: the number of colors you want to show, default to the number of colors you\'ve defined below', 'cpg'); ?></li>
 								<li><?php _e('total: the maximum number of palettes you want to show, by default, all palettes are shown', 'cpg'); ?></li>
 							</ul>
 						</div>
@@ -430,7 +458,9 @@ function cpg_register_default_settings(){
 	//set default colors for filtering
 	$default_opts = array(
 		'color_table' => cpg_default_color_table(),
-		'show_on_attachment' => true
+		'show_on_attachment' => true,
+		'make_palette_clickable' => false,
+		'make_dominant_clickable' => false
 	);
 	add_option( 'cpg_options', $default_opts );
 
@@ -480,11 +510,18 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 
 		if( $atts['dominant'] == 'true' && $colors ) {
 			$dominant = $colors[0];
+			$parent = get_term( $dominant->parent, 'cpg_dominant_color' );
 	    	$dominant = $dominant->name;
-	    	$content .= '<div class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></div>';
+
+	    	if( isset( $options['make_dominant_clickable']) && $options['make_dominant_clickable'] ){
+	    		$content .= '<a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($dominant).';" data-title="Dominant: '.esc_attr($dominant).'"></a>';
+	    	}else{
+	    		$content .= '<div class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></div>';
+	    	}
 	    }
 
 		if( $palette ){
+			$PKR = new PKRoundColor();
 			$content .= '<ul class="cpg__palette-list">';
 			shuffle($palette);
 			foreach ( $palette as $i => $color ) {
@@ -495,7 +532,14 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 				if( is_object( $color ) ){
 					$color = $color->name;
 				}
-				$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.$color.';" data-title="'.$color.'"></li>';
+				if( isset( $options['make_palette_clickable']) && $options['make_palette_clickable'] ){
+					$parent = $PKR->getRoundedColor($color);
+					$parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
+
+					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="Dominant: '.esc_attr($color).'"></a></li>';
+		    	}else{
+		    		$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></li>';
+		    	}
 			}
 			$content .= '</ul>';
 		}
