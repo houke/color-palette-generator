@@ -197,7 +197,7 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 			'size' => $size
 		);
 
-		$html = '[colorpalette attachment="'.$id.'" dominant="'.$cpg_show_dominant.'" colors="'.$cpg_number_of_colors.'" size="'.$size.'"] <br/>';
+		$html = '[colorpalette attachment="'.$id.'" dominant="'.$cpg_show_dominant.'" colors="'.$cpg_number_of_colors.'" size="'.$size.'" random="true"] <br/>';
 	}
 
     return $html;
@@ -494,7 +494,8 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 		'attachment' => '',
 		'dominant' => false,
 		'colors' => $colors,
-		'size' => 'large'
+		'size' => 'large',
+		'random' => true
 	), $atts, 'colorpalette' );
 
 	$att_id = $atts['attachment'];
@@ -522,7 +523,9 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 		if( $palette ){
 			$PKR = new PKRoundColor();
 			$content .= '<ul class="cpg__palette-list">';
-			shuffle($palette);
+			if( $atts['random'] ){
+				shuffle($palette);
+			}
 			foreach ( $palette as $i => $color ) {
 				if ( $i == $atts['colors'] ){
    					break;
@@ -570,7 +573,8 @@ function cpg_colorpalettes_shortcode( $atts ) {
 		'colors' => $colors,
 		'orderby' => 'post_date',
 		'order' => 'DESC',
-		'total' => -1
+		'total' => -1,
+		'random' => true
 	), $atts, 'colorpalettes' );
 
 	$attachments = $atts['attachments'];
@@ -578,6 +582,7 @@ function cpg_colorpalettes_shortcode( $atts ) {
 	$orderby = $atts['orderby'];
 	$order = $atts['order'];
 	$ppp = $atts['total'];
+	$random = $atts['random'];
 
 	$terms = get_terms( array(
     	'taxonomy' => 'cpg_dominant_color'
@@ -608,7 +613,9 @@ function cpg_colorpalettes_shortcode( $atts ) {
 		foreach ($attachments as $attachment) {
 			$content .= '<ul class="cpg__palette-list">';
 			$palette = get_the_terms( $attachment, 'cpg_palette' );
-			shuffle( $palette );
+			if( $random ){
+				shuffle( $palette );
+			}
 			foreach ( $palette as $i => $color ) {
 				if ( $i == $atts['colors'] ){
    					break;

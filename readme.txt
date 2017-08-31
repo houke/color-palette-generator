@@ -9,13 +9,13 @@ License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: cpg
 Domain Path: /languages
-Version: 1.5.2
+Version: 1.6
 
 This plugin generates color palettes for your WordPress images and appends them to your content.
 
 == Description ==
 
-This plugin is ideal for blog owners who like to do something more with their images, or for webshop owners who like to filter products by color. When inserting images you have the option to show the palette for that image. You can also use the following shortcode to show a specific image with palette: `[colorpalette attachment="56" dominant="false" colors="10" size="large"]`
+This plugin is ideal for blog owners who like to do something more with their images, or for webshop owners who like to filter products by color. When inserting images you have the option to show the palette for that image. You can also use the following shortcode to show a specific image with palette: `[colorpalette attachment="56" dominant="false" colors="10" size="large" random="true"]`
 
 = Features =
 
@@ -68,6 +68,10 @@ Manual Installation:
 == Upgrade Notice ==
 
 == Changelog ==
+
+= 1.6 =
+
+* Added option to shortcodes to disable random output of colorpalette
 
 = 1.5.2 =
 

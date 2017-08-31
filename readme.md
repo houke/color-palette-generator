@@ -4,7 +4,7 @@ Generate color palettes for your WordPress images, append them to your images in
 
 ## Description ##
 
-This plugin is ideal for blog owners who like to do something more with their images, or for webshop owners who like to filter products by color. When inserting images you have the option to show the palette for that image. You can also use the following shortcode to show a specific image with palette: `[colorpalette attachment="56" dominant="false" colors="10" size="large"]`
+This plugin is ideal for blog owners who like to do something more with their images, or for webshop owners who like to filter products by color. When inserting images you have the option to show the palette for that image. You can also use the following shortcode to show a specific image with palette: `[colorpalette attachment="56" dominant="false" colors="10" size="large" random="true"]`
 
 ## Features ##
 
@@ -61,6 +61,10 @@ Manual Installation:
 * Generate palette on upload
 
 ## Changelog ##
+
+### 1.6 ###
+
+* Added option to shortcodes to disable random output of colorpalette
 
 ### 1.5.2 ###
 
