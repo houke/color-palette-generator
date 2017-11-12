@@ -71,7 +71,10 @@ Manual Installation:
 
 = 1.6 =
 
-* Added option to shortcodes to disable random output of colorpalette
+* Changed the dasboard layout
+* Added a remove button to remove all generated palettes
+* Added an option to control how the palette colors are shown
+* The bulk generation is now around 10 times faster (especially noticeable with more than 10.000 images in your library)
 
 = 1.5.2 =
 

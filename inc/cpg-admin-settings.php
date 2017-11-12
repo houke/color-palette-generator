@@ -35,35 +35,42 @@ function cpg_register_settings() {
 	);
 	add_settings_field(
 		'cpg_colors',
-		'Number of colors to generate',
+		__('Number of colors to generate', 'cpg'),
 		'cpg_create_field_colors',
 		'cpg_settings_page',
 		'cpg_options'
 	);
 	add_settings_field(
+		'cpg_palette_order',
+		__('Order of palette colors', 'cpg'),
+		'cpg_create_field_palette_order',
+		'cpg_settings_page',
+		'cpg_options'
+	);
+	add_settings_field(
 		'cpg_show_on_attachment',
-		'Show palette on attachment pages?',
+		__('Show palette on attachment pages?', 'cpg'),
 		'cpg_create_field_show_on_attachment',
 		'cpg_settings_page',
 		'cpg_options'
 	);
 	add_settings_field(
 		'cpg_make_fields_clickable',
-		'Should the palette colors link to the search page?',
+		__('Should the palette colors link to the search page?', 'cpg'),
 		'cpg_create_field_make_clickable',
 		'cpg_settings_page',
 		'cpg_options'
 	);
 	add_settings_field(
 		'cpg_make_dominant_clickable',
-		'Should the dominant color link to the search page?',
+		__('Should the dominant color link to the search page?', 'cpg'),
 		'cpg_create_field_dominant_clickable',
 		'cpg_settings_page',
 		'cpg_options'
 	);
 	add_settings_field(
 		'cpg_edit_colors',
-		'Create your own color filters?',
+		__('Create your own color filters?', 'cpg'),
 		'cpg_create_field_color_filter',
 		'cpg_settings_page',
 		'cpg_options'
@@ -79,6 +86,18 @@ function cpg_create_field_colors() {
 	$value = isset( $options['colors'] ) ? $options['colors'] : 10;
 
 	echo '<input id="cpg_colors" name="cpg_options[colors]" type="number" value="'.$value.'" style="width: 100%;"/> <br/><small>The higher the number, the heavier the process.</small>';
+}
+
+function cpg_create_field_palette_order(){
+	$options = get_option('cpg_options');
+	$value = isset( $options['order'] ) ? $options['order'] : 'rand';
+	$rand_checked = $value == 'rand' ? 'checked="true"' : '';
+	$asc_checked = $value == 'name|asc' ? 'checked="true"' : '';
+	$desc_checked = $value == 'name|desc' ? 'checked="true"' : '';
+	echo '<label class="cpg__settings-label"><input id="cpg_order" name="cpg_options[order]" type="radio" value="rand" '.$rand_checked.'/> Random</label>';
+	echo '<label class="cpg__settings-label"><input id="cpg_order" name="cpg_options[order]" type="radio" value="name|asc" '.$asc_checked.'/> Name (Asc)</label>';
+	echo '<label class="cpg__settings-label"><input id="cpg_order" name="cpg_options[order]" type="radio" value="name|desc" '.$desc_checked.'/> Name (Desc)</label>';
+
 }
 
 function cpg_create_field_show_on_attachment() {
@@ -109,7 +128,7 @@ function cpg_create_field_color_filter() {
 	$substring = $checked ? __('You can now edit the color table below. If you do this, all palettes need to be regenerated', 'cpg') : __('Only check this if you know what you\'re doing', 'cpg');
 
 	echo '<label><input id="cpg_edit_colors" name="cpg_options[edit_colors]" type="checkbox" value="true" '.$checked.'/>
-	<small>'.$substring.'. <br/><a href="https://www.thearthunters.com/color-palette-generator/" target="_blank">' . __('Read more about this option', 'cpg') . '</a></small></label>';
+	<small>'.$substring.'. <br/><a href="https://www.thearthunters.com/color-palette-generator/#colorfilters" target="_blank">' . __('Read more about this option', 'cpg') . '</a></small></label>';
 }
 
 //Add palette options to image insert
@@ -197,7 +216,7 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 			'size' => $size
 		);
 
-		$html = '[colorpalette attachment="'.$id.'" dominant="'.$cpg_show_dominant.'" colors="'.$cpg_number_of_colors.'" size="'.$size.'" random="true"] <br/>';
+		$html = '[colorpalette attachment="'.$id.'" dominant="'.$cpg_show_dominant.'" colors="'.$cpg_number_of_colors.'" size="'.$size.'"] <br/>';
 	}
 
     return $html;
@@ -205,7 +224,7 @@ function cpg_send_image_to_editor($html, $id, $caption, $title, $align, $url, $s
 add_filter( 'image_send_to_editor', 'cpg_send_image_to_editor', 12, 9 );
 
 //add meta box to edit attachment pages
-function add_our_attachment_meta(){
+function cpg_our_attachment_meta(){
 	$options = get_option('cpg_options');
 	if(
 		isset( $_GET['post'] ) &&
@@ -223,7 +242,7 @@ function add_our_attachment_meta(){
         );
 	}
 }
-add_action( 'admin_init', 'add_our_attachment_meta' );
+add_action( 'admin_init', 'cpg_our_attachment_meta' );
 
 function cpg_attachment_meta_box_callback(){
     global $post;
@@ -264,9 +283,10 @@ function cpg_settings_page(){
 		$options['color_table'] = $default_colors;
 		update_option( 'cpg_options', $options);
 	}
-	$total = cpg_img_count();
-	$with = cpg_img_count( true );
-	$excluded = cpg_img_count( false, true );
+	$total = cpg_img_count( 'all' );
+	$with = cpg_img_count( 'palette' );
+	$excluded = cpg_img_count( 'excluded' );
+	$excluded_count = count($excluded);
 	$options = get_option('cpg_options');
 	$colors = isset( $options['colors'] ) ? $options['colors'] : 10;
 	$edit_colors = isset( $options['edit_colors'] ) ? $options['edit_colors'] : false;
@@ -280,6 +300,19 @@ function cpg_settings_page(){
 				<div id="post-body-content">
 					<?php if( isset( $_GET['action'] ) && sanitize_text_field($_GET['action']) != '' ){ ?>
 
+					<?php if( isset( $_GET['regenerate'] ) && $_GET['regenerate'] == 'reset' ) { ?>
+					<div id="cpg-stats" class="postbox cpg-postbox">
+						<h2 class="hndle cpg-hndle"><?php _e('Successfully deleted', 'cpg'); ?></h2>
+						<div class="inside">
+							<p>
+								<?php _e('You\'ve successfully deleted all palettes. You can now start generating new palettes if you want.', 'cpg'); ?>
+								<a href="<?php echo esc_url(get_admin_url(null, 'upload.php?page='.CPG_NAME)); ?>">
+									<?php _e('Click here to go back.', 'cpg'); ?>
+								</a>
+							</p>
+						</div>
+					</div>
+					<?php } else { ?>
 					<div id="cpg-stats" class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e('Error', 'cpg'); ?></h2>
 						<div class="inside">
@@ -291,10 +324,11 @@ function cpg_settings_page(){
 							</p>
 						</div>
 					</div>
+					<?php } ?>
 
 					<?php }elseif( isset( $_GET['reset'] ) && sanitize_text_field($_GET['reset']) == 'true'  ){ ?>
 
-					<div id="cpg-stats" class="postbox cpg-postbox">
+					<div class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e('Reset successful', 'cpg'); ?></h2>
 						<div class="inside">
 							<p>
@@ -308,38 +342,7 @@ function cpg_settings_page(){
 
 					<?php }else{ ?>
 
-					<div id="cpg-stats" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle">
-							<span><?php _e( 'Bulk generator', 'cpg' ); ?> (<span data-with><?php echo esc_html($with); ?></span> / <span data-total><?php echo esc_html($total); ?></span>)</span>
-							<?php if($total - $excluded != $with){ ?>
-								<small>
-									<?php _e( 'Generate individual palettes via your', 'cpg' ); ?>
-									<a href="<?php echo esc_url(get_admin_url(null, 'upload.php')); ?>">
-										<?php _e( 'Media Library', 'cpg' ); ?>
-									</a>
-								</small>
-							<?php } ?>
-						</h2>
-						<div class="inside cpg__inside cpg__inside--btn cpg__inside--generate">
-							<p>
-								<?php if( $total - $with - $excluded == 0 ) { ?>
-									<?php _e( 'All images have a palette. Well done!', 'cpg' ); ?>
-								<?php } else { $img = get_attachment_without_colors(); ?>
-									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&post_id='.$img['id'].'&_wpnonce=' . wp_create_nonce( 'cpg_bulk_generate_palette_'.$img['id'].'_nonce' ); ?>&colors=<?php echo $colors; ?>&regenerate=false" class="button cpg-button-bulk" data-src="<?php echo $img['src']; ?>">
-											<?php _e( 'Generate palettes', 'cpg' ); ?>
-									</a>
-								<?php } ?>
-
-								<?php if( $with > 0 ) { ?>
-									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&_wpnonce=' . wp_create_nonce( 'cpg_bulk_regenerate_palette_nonce' ); ?>&regenerate=true" class="cpg-button-bulk--regenerate">
-											<?php _e( 'Regenerate palettes', 'cpg' ); ?>
-									</a>
-								<?php } ?>
-							</p>
-						</div>
-					</div>
-
-					<div id="cpg-stats" class="postbox cpg-postbox">
+					<div class="postbox cpg-postbox">
 						<h2 class="hndle cpg-hndle"><?php _e( 'Shortcodes', 'cpg' ); ?></h2>
 						<div class="inside cpg__inside cpg__inside--btn">
 							<p><?php _e('To show individual images within a post, use the following shortcode (or enter the required options while adding images)', 'cpg'); ?>: <pre><code>[colorpalette attachment="56" dominant="false" colors="3" size="thumbnail"]</code></pre></p>
@@ -363,6 +366,7 @@ function cpg_settings_page(){
 						<?php
 							settings_fields( 'cpg_options' );
 							do_settings_sections( 'cpg_settings_page' );
+							if($edit_colors){
 						?>
 						<div class="cpg-wrap cpg-wrap--<?php echo esc_attr($edit_colors) ? 'visible' : 'hidden'; ?>">
 							<table class="cpg-color-table">
@@ -420,32 +424,51 @@ function cpg_settings_page(){
 								</tbody>
 							</table>
 						</div>
-						<?php submit_button(); ?>
+						<?php } //end if
+						submit_button(); ?>
 					</form>
 					<?php } ?>
 				</div>
 				<div id="postbox-container-1" class="postbox-container">
-					<div id="cpg-stats" class="postbox cpg-postbox">
-						<h2 class="hndle cpg-hndle"><span><?php _e( 'Stats', 'cpg' ); ?></span></h2>
-						<div class="inside cpg__inside">
-							<p class="cpg__stats <?php if( $total > 100000 ) { ?>cpg__stats--small<?php } ?>">
-								<span data-total><?php echo esc_html( $total ); ?></span>
-								<?php _e( 'Total images', 'cpg' ); ?>
-							</p>
-							<p class="cpg__stats">
-								<span data-with><?php echo esc_html( $with ); ?></span>
-								<?php _e( 'With palette', 'cpg' ); ?>
-							</p>
-							<p class="cpg__stats">
-								<span data-without><?php echo esc_html( $total-$with-$excluded ); ?></span>
-								<?php _e( 'Without palette', 'cpg' ); ?>
-							</p>
-							<p class="cpg__stats--full <?php if( $excluded < 1 ) { ?>cpg__stats--hidden<?php } ?>">
-								<span data-excluded><?php echo esc_html( $excluded ); ?></span>
-								<?php _e( 'skipped due to error', 'cpg'); ?>
+
+					<div class="postbox cpg-postbox">
+						<h2 class="hndle cpg-hndle">
+							<span><?php _e( 'Bulk generator', 'cpg' ); ?> (<span data-with><?php echo intval($with + $excluded_count); ?></span> / <span data-total><?php echo esc_html($total); ?></span>)</span>
+						</h2>
+						<div class="inside cpg__inside cpg__inside--btn cpg__inside--generate">
+							<p>
+								<?php if( $total - $with - $excluded_count == 0 ) { ?>
+									<?php _e( 'All images have a palette. Well done!', 'cpg' ); ?>
+								<?php } else { $img = get_attachment_without_colors(); ?>
+									<a href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&post_id='.$img['id'].'&_wpnonce=' . wp_create_nonce( 'cpg_bulk_generate_palette_'.$img['id'].'_nonce' ); ?>&colors=<?php echo $colors; ?>&regenerate=false" class="button-primary button cpg-button-bulk" data-src="<?php echo $img['src']; ?>">
+											<?php _e( 'Generate palettes', 'cpg' ); ?>
+									</a>
+								<?php } ?>
+
+								<?php if( $with > 0 ) { ?>
+									<br/><br/><a title="<?php _e('Will remove all palettes and automatically start regenerating new ones', 'cpg'); ?>" href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&_wpnonce=' . wp_create_nonce( 'cpg_bulk_regenerate_palette_nonce' ); ?>&regenerate=true" class="button cpg-button-bulk--regenerate"><?php _e( 'Regenerate', 'cpg' ); ?></a>
+									<a title="<?php _e('Will remove all palettes', 'cpg'); ?>" href="<?php echo get_admin_url( null, 'upload.php?page='.CPG_NAME ) . '&action=cpg_bulk_generate_palette&_wpnonce=' . wp_create_nonce( 'cpg_bulk_regenerate_palette_nonce' ); ?>&regenerate=reset" class="button cpg-button-bulk--reset"><?php _e( 'Remove', 'cpg' ); ?></a>
+								<?php } ?>
 							</p>
 						</div>
 					</div>
+
+					<?php if( $excluded_count > 0 ) { ?>
+					<div class="postbox cpg-postbox cpg-postbox--skipped">
+						<h2 class="hndle cpg-hndle"><span><?php _e( 'Skipped', 'cpg' ); ?></span></h2>
+						<div class="inside cpg__inside">
+							<ul class="cpg__stats--errors">
+								<?php foreach ($excluded as $ex) { ?>
+									<li>
+										<a href="<?php echo get_edit_post_link($ex->post_id); ?>">
+											<?php echo get_the_title($ex->post_id); ?>
+										</a>
+									</li>
+								<?php } ?>
+							</ul>
+						</div>
+					</div>
+					<?php } ?>
 				</div>
 			</div>
 		</div>
@@ -454,18 +477,12 @@ function cpg_settings_page(){
 	<?php
 }
 //Setup settings & taxonomies used to store colors
-function cpg_register_default_settings(){
-	//set default colors for filtering
-	$default_opts = array(
-		'color_table' => cpg_default_color_table(),
-		'show_on_attachment' => true,
-		'make_palette_clickable' => false,
-		'make_dominant_clickable' => false
-	);
-	add_option( 'cpg_options', $default_opts );
-
+function cpg_register_taxonomies(){
     $args = array(
         'public' => true,
+        'show_ui' => false,
+        'show_in_menu' => false,
+        'show_in_nav_menus' => false,
         'update_count_callback' => '_update_generic_term_count',
         'query_var' => false,
         'hierarchical' => true
@@ -475,14 +492,29 @@ function cpg_register_default_settings(){
 
     $args_palette = array(
         'public' => false,
+        'show_ui' => false,
+        'show_in_menu' => false,
+        'show_in_nav_menus' => false,
         'update_count_callback' => '_update_generic_term_count',
-        'query_var' => false
+        'query_var' => false,
+        'rewrite' => false
     );
     register_taxonomy( 'cpg_palette', array( 'attachment' ), $args_palette );
-
-	cpg_setup_taxonomies();
 }
-add_action( 'init', 'cpg_register_default_settings' );
+add_action( 'init', 'cpg_register_taxonomies' );
+
+function cpg_register_intial_settings(){
+	//set default colors for filtering
+	$default_opts = array(
+		'color_table' => cpg_default_color_table(),
+		'show_on_attachment' => true,
+		'make_palette_clickable' => false,
+		'make_dominant_clickable' => false
+	);
+	add_option( 'cpg_options', $default_opts );
+	cpg_register_taxonomies();
+	cpg_setup_taxonomies( false, false );
+}
 
 function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 
@@ -494,8 +526,7 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 		'attachment' => '',
 		'dominant' => false,
 		'colors' => $colors,
-		'size' => 'large',
-		'random' => true
+		'size' => 'large'
 	), $atts, 'colorpalette' );
 
 	$att_id = $atts['attachment'];
@@ -522,10 +553,18 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 
 		if( $palette ){
 			$PKR = new PKRoundColor();
-			$content .= '<ul class="cpg__palette-list">';
-			if( $atts['random'] ){
-				shuffle($palette);
+			$options = get_option('cpg_options');
+			$order = isset( $options['order'] ) ? $options['order'] : 'rand';
+			if( $order == 'rand' ){
+				shuffle( $palette );
+			}elseif( $order == 'name|asc'){
+				usort($palette, "cpg_sort");
+			}else{
+				usort($palette, "cpg_sort");
+				$palette = array_reverse($palette);
 			}
+
+			$content .= '<ul class="cpg__palette-list">';
 			foreach ( $palette as $i => $color ) {
 				if ( $i == $atts['colors'] ){
    					break;
@@ -538,7 +577,7 @@ function cpg_colorpalette_shortcode( $atts, $content = "" ) {
 					$parent = $PKR->getRoundedColor($color);
 					$parent = get_term_by( 'slug', $parent, 'cpg_dominant_color' );
 
-					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="Dominant: '.esc_attr($color).'"></a></li>';
+					$content .= '<li class="cpg__palette-item cpg__palette-item-helper"><a href="'.esc_url( get_bloginfo( 'url' ).'/color/'.$parent->description.'/' ).'" class="cpg__dominant-color cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></a></li>';
 		    	}else{
 		    		$content .= '<li class="cpg__palette-item cpg__color-item" style="background-color:'.esc_attr($color).';" data-title="'.esc_attr($color).'"></li>';
 		    	}
@@ -573,8 +612,7 @@ function cpg_colorpalettes_shortcode( $atts ) {
 		'colors' => $colors,
 		'orderby' => 'post_date',
 		'order' => 'DESC',
-		'total' => -1,
-		'random' => true
+		'total' => -1
 	), $atts, 'colorpalettes' );
 
 	$attachments = $atts['attachments'];
@@ -582,7 +620,6 @@ function cpg_colorpalettes_shortcode( $atts ) {
 	$orderby = $atts['orderby'];
 	$order = $atts['order'];
 	$ppp = $atts['total'];
-	$random = $atts['random'];
 
 	$terms = get_terms( array(
     	'taxonomy' => 'cpg_dominant_color'
@@ -611,11 +648,18 @@ function cpg_colorpalettes_shortcode( $atts ) {
 
 	if( $attachments ){
 		foreach ($attachments as $attachment) {
-			$content .= '<ul class="cpg__palette-list">';
 			$palette = get_the_terms( $attachment, 'cpg_palette' );
-			if( $random ){
+			$options = get_option('cpg_options');
+			$order = isset( $options['order'] ) ? $options['order'] : 'rand';
+			if( $order == 'rand' ){
 				shuffle( $palette );
+			}elseif( $order == 'name|asc'){
+				usort($palette, "cpg_sort");
+			}else{
+				usort($palette, "cpg_sort");
+				$palette = array_reverse($palette);
 			}
+			$content .= '<ul class="cpg__palette-list">';
 			foreach ( $palette as $i => $color ) {
 				if ( $i == $atts['colors'] ){
    					break;
@@ -640,13 +684,16 @@ add_shortcode( 'colorpalettes', 'cpg_colorpalettes_shortcode' );
 
 //Register taxonomies on install
 function cpg_install(){
-    cpg_register_default_settings();
+    cpg_register_intial_settings();
     flush_rewrite_rules();
 }
-register_activation_hook( CPG_DIR, 'cpg_install' );
+register_activation_hook( CPG_FILE, 'cpg_install' );
 
 //Flush rules on deactivate
 function cpg_deactivation(){
+	delete_option( 'cpg_options' );
+	delete_option( 'cpg_dominant_color_children' );
+	cpg_setup_taxonomies( false, true );
     flush_rewrite_rules();
 }
-register_deactivation_hook( CPG_DIR, 'cpg_deactivation' );
+register_deactivation_hook( CPG_FILE, 'cpg_deactivation' );

@@ -3,9 +3,18 @@
 	//Output if palette is available
 	function cpg_admin_show_palette( $dominant, $palette, $post_id ){
 		$response = '<div class="cpg__dominant-color cpg__color-item" style="background-color:'.$dominant.';" data-title="Dominant: '.$dominant.'"></div>';
-
+		
 		if( $palette ){
-			sort( $palette );
+			$options = get_option('cpg_options');
+			$order = isset( $options['order'] ) ? $options['order'] : 'rand';
+			if( $order == 'rand' ){
+				shuffle( $palette );
+			}elseif( $order == 'name|asc'){
+				usort($palette, "cpg_sort");
+			}else{
+				usort($palette, "cpg_sort");
+				$palette = array_reverse($palette);
+			}
 			$response .= '<ul class="cpg__palette-list">';
 			foreach ( $palette as $color ) {
 				if( is_object( $color ) ){
@@ -25,6 +34,10 @@
 			</div>';
 
 		return $response;
+	}
+
+	function cpg_sort($a, $b){
+	   	return strcmp($a->slug, $b->slug);
 	}
 
 	//Output if palette is not yet generated
@@ -395,109 +408,108 @@
 	}
 
 	//Show # of images with a palette
-	function cpg_img_count( $palette = false, $excluded = false ){
-        $query_img_args = array(
-	        'post_type' => 'attachment',
-	        'post_mime_type' =>array(
-                'jpg|jpeg|jpe' => 'image/jpeg',
-                'gif' => 'image/gif',
-                'png' => 'image/png',
-            ),
-	        'post_status' => 'inherit',
-	        'posts_per_page' => -1,
-        );
+	function cpg_img_count( $type ){
+		global $wpdb;
 
-        if( $palette ){
-        	$query_img_args['tax_query'][] = array(
-	            'taxonomy' 	=> 'cpg_dominant_color',
-	            'terms'    => get_terms( 'cpg_dominant_color', array( 'fields' => 'ids'  ) ),
-	            'operator'	=> 'IN'
-	        );
-        }
-
-        if( $excluded ){
-        	$query_img_args['meta_query'] = array(
-        		array(
-			    	'key' => 'cpg_exclude',
-			    	'value' => 'true',
-			    	'compare' => 'LIKE'
-			    )
-			);
-        }
-        $query_img = new WP_Query( $query_img_args );
-        return $query_img->post_count;
+		if( $type == 'palette' ){
+		    $querystr = "SELECT count(id)
+		    	FROM $wpdb->posts p
+		    	WHERE p.post_type = 'attachment'
+		    	AND EXISTS (
+		    		SELECT *
+		    			FROM $wpdb->term_relationships rel
+		    			JOIN $wpdb->term_taxonomy tax
+		    			ON tax.term_taxonomy_id = rel.term_taxonomy_id
+		    			AND tax.taxonomy = 'cpg_dominant_color'
+		    			JOIN $wpdb->terms term
+		    			ON term.term_id = tax.term_id
+		    			WHERE p.ID = rel.object_id
+		    		)";
+			$result = $wpdb->get_var($querystr);
+	    }elseif( $type == 'excluded' ){
+	    	$querystr = "SELECT post_id
+				FROM $wpdb->postmeta
+				WHERE meta_key = 'cpg_exclude'";
+			$result = $wpdb->get_results($querystr);
+	    }else{
+			$querystr = "SELECT count(id)
+				FROM $wpdb->posts
+				WHERE post_type = 'attachment'";
+			$result = $wpdb->get_var($querystr);
+	    }
+		return $result;
 	}
 
 	//return first image which needs a palette (used for bulk generating)
 	function get_attachment_without_colors( $post_id = false ){
-        $query_img_args = array(
-	        'post_type' => 'attachment',
-	        'post_mime_type' => array(
-                'jpg|jpeg|jpe' => 'image/jpeg',
-                'gif' => 'image/gif',
-                'png' => 'image/png',
-            ),
-	        'post_status' => 'inherit',
-	        'posts_per_page' => 1,
-            'fields' => 'ids',
-	        'tax_query' => array(
-	        	array(
-		            'taxonomy' 	=> 'cpg_dominant_color',
-		            'terms'    => get_terms( 'cpg_dominant_color', array( 'fields' => 'ids'  ) ),
-		            'operator'	=> 'NOT IN'
-		        )
-	        ),
-	        'meta_query' => array(
-			    array(
-			    	'key' => 'cpg_exclude',
-			    	'compare' => 'NOT EXISTS'
-			    ),
-			)
-        );
+		global $wpdb;
+		$querystr = "SELECT ID
+			FROM    $wpdb->posts p
+			WHERE   p.post_type = 'attachment'
+			        AND NOT EXISTS
+			        (
+			        SELECT  *
+			        FROM    $wpdb->term_relationships rel
+			        JOIN    $wpdb->term_taxonomy tax
+			        ON      tax.term_taxonomy_id = rel.term_taxonomy_id
+			                AND tax.taxonomy = 'cpg_dominant_color'
+			        JOIN    $wpdb->terms term
+			        ON      term.term_id = tax.term_id
+			        WHERE   p.ID = rel.object_id
+			        )
+			        AND NOT EXISTS
+			        (
+					SELECT *
+					FROM $wpdb->postmeta
+					WHERE p.ID = $wpdb->postmeta.post_id
+					AND meta_key = 'cpg_exclude'
+			        )
+			ORDER BY p.ID DESC
+			LIMIT 1";
+		$result = $wpdb->get_results($querystr);
+		if(isset($result[0]) && isset($result[0]->ID)){
+	        $next_post_id = $result[0]->ID;
+	        $next_post_src = wp_get_attachment_image_src( $next_post_id, 'large' );
+	        if( $next_post_src ){
+	        	$next_post_src = $next_post_src[0];
+	        }
 
-        if( $post_id ){
-	        $query_img_args['post__not_in'] = array( $post_id );
-        }
-
-        $next_post_id = get_posts( $query_img_args );
-        $next_post_id = $next_post_id[0];
-        $next_post_src = wp_get_attachment_image_src( $next_post_id, 'large' );
-        if( $next_post_src ){
-        	$next_post_src = $next_post_src[0];
-        }
-
-        if( $next_post_id ){
-        	$result = array(
-        		'more' => true,
-        		'id' => $next_post_id,
-        		'src' => $next_post_src
-        	);
-        }else{
+	        if( $next_post_id ){
+	        	$result = array(
+	        		'more' => true,
+	        		'id' => $next_post_id,
+	        		'src' => $next_post_src
+	        	);
+	        }else{
+	        	$result = "";
+	        }
+	    }else{
         	$result = "";
-        }
+	    }
 
         return $result;
 	}
 
-	function cpg_setup_taxonomies($reset = false){
-		if($reset){
-			$terms = get_terms(
-			 	array(
-			 		'cpg_dominant_color',
-			 		'cpg_palette'
-			 	),
-			 	array(
-			 		'hide_empty' => false
-			 	)
-			);
-	        foreach ( $terms as $value ) {
-               	wp_delete_term( $value->term_id, $value->taxonomy );
-	        }
+	function cpg_setup_taxonomies($regenerate = false, $reset = false){
+		if($reset || $regenerate){
+	        /** Delete All the Taxonomies */
+	        global $wpdb;
+	        $query = "
+			  DELETE FROM $wpdb->postmeta
+			  WHERE meta_key = 'cpg_exclude'
+			";
+			$wpdb->query($query);
+
+			foreach ( array( 'cpg_dominant_color', 'cpg_palette' ) as $taxonomy ) {
+				// Prepare & excecute SQL, Delete Terms
+				$wpdb->get_results( $wpdb->prepare( "DELETE t.*, tt.* FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN ('%s')", $taxonomy ) );
+				$wpdb->delete( $wpdb->term_taxonomy, array( 'taxonomy' => $taxonomy ), array( '%s' ) );
+			}
 		}
-
-	    $searchcolors = cpg_return_colors();
-
-	    foreach ($searchcolors as $name => $code) {
-	   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
+		if( !$reset ){
+		    $searchcolors = cpg_return_colors();
+		    foreach ($searchcolors as $name => $code) {
+		   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
+		    }
 	    }
 	}

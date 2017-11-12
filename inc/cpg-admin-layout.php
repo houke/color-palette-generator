@@ -45,25 +45,33 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 	);
 	wp_register_script(
 		'cpg-admin-functions',
-		plugins_url( 'assets/js/admin-functions.js', dirname(__FILE__), array( 'jquery' ) )
+		plugins_url( 'assets/js/admin-functions.js', dirname(__FILE__) ),
+		array( 'jquery' ),
+		CPG_VERSION
 	);
     wp_register_script(
     	'cpg-generate-palette',
     	plugins_url( 'assets/js/generate-palette.js', dirname(__FILE__) ),
-    	array( 'jquery', 'cpg-color-thief', 'cpg-admin-functions' )
+    	array( 'jquery', 'cpg-color-thief', 'cpg-admin-functions' ),
+		CPG_VERSION
 	);
     wp_register_script(
     	'cpg-bulk-generate-palette',
     	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
-    	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' )
+    	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' ),
+		CPG_VERSION
 	);
     wp_register_style(
     	'cpg-generate-palette-settings-page-css',
-    	plugins_url( 'assets/css/admin-settings-page-styles.css', dirname(__FILE__) )
+    	plugins_url( 'assets/css/admin-settings-page-styles.css', dirname(__FILE__) ),
+    	array(),
+    	CPG_VERSION
 	);
     wp_register_style(
     	'cpg-media-popup-style-css',
-    	plugins_url( 'assets/css/admin-media-popup-styles.css', dirname(__FILE__) )
+    	plugins_url( 'assets/css/admin-media-popup-styles.css', dirname(__FILE__) ),
+    	array(),
+    	CPG_VERSION
 	);
 
 	wp_localize_script( 'cpg-bulk-generate-palette', 'cpg',
@@ -75,7 +83,8 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 			'enter_value' => __('Please enter a name for this color row', 'cpg'),
 			'enter_value_placeholder' => __('Color name', 'cpg'),
 			'keep_open' => __('Keep this page open until everything is done', 'cpg'),
-			'loading_failed' => __('Attachment skipped (File not found). ID')
+			'loading_failed' => __('Attachment skipped - ID'),
+			'removed' => __('All palettes are successfully removed', 'cpg')
 		)
 	);
 

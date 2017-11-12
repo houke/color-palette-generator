@@ -1,12 +1,12 @@
-.cpg-column--color{
+.cpg-column--color {
 	width: 20%;
 }
 
-.cpg-table__caption{
+.cpg-table__caption {
 	text-align: left;
 }
 
-.cpg__table-color{
+.cpg__table-color {
 	width: 60px;
 	height: 20px;
 	display: block;
@@ -15,13 +15,13 @@
 	margin: 1px;
 }
 
-.cpg__table-color:after{
+.cpg__table-color:after {
 	content: attr(data-title);
 	position: absolute;
 	background-color: #000;
 	border-radius: 3px;
 	font-size: 12px;
-	color: #FFF;
+	color: #fff;
 	right: 0;
 	bottom: 100%;
 	display: none;
@@ -29,8 +29,8 @@
 	width: 100%;
 	text-align: center;
 }
-.cpg__table-color:before{
-	content: "";
+.cpg__table-color:before {
+	content: '';
 	position: absolute;
 	left: 50%;
 	margin-left: -4px;
@@ -40,53 +40,57 @@
 	display: none;
 }
 .cpg__table-color:hover {
-    margin: 0;
-    width: 62px;
-    height: 22px;
+	margin: 0;
+	width: 62px;
+	height: 22px;
 }
 
 .cpg__table-color:hover:after,
-.cpg__table-color:hover:before{
+.cpg__table-color:hover:before {
 	display: block;
 }
 
-.cpg__table-color--main{
+.cpg__table-color--main {
 	float: none;
 }
 
-.cpg__table-color-name{
+.cpg__table-color-name {
 	font-size: 12px;
 	text-transform: capitalize;
 }
 
-.cpg-postbox img{
+.cpg-postbox img {
 	max-width: 100%;
 }
 
-.js .postbox .hndle.cpg-hndle{
+.cpg-postbox pre {
+	overflow: auto;
+}
+
+.js .postbox .hndle.cpg-hndle {
 	cursor: default;
 }
 
-.cpg-hndle small{
-    float: right;
-    display: block;
-    line-height: 20px;
-    font-weight: normal;
+.cpg-hndle small {
+	float: right;
+	display: block;
+	line-height: 20px;
+	font-weight: normal;
 }
 
 .cpg__inside:before,
-.cpg__inside:after{
-	content: "";
+.cpg__inside:after {
+	content: '';
 	display: table;
 	width: 100%;
 }
 
-.cpg__inside--scroller{
+.cpg__inside--scroller {
 	max-height: 300px;
 	overflow: auto;
 }
 
-.cpg__stats{
+.cpg__stats {
 	text-transform: uppercase;
 	font-size: 12px;
 	text-align: center;
@@ -97,170 +101,205 @@
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-    line-height: 1.25;
+	line-height: 1.25;
 }
 
-.cpg__stats--full{
-    float: left;
-    clear: both;
-    width: 100%;
-    border-top: 1px solid #eee;
-    padding-top: 5px;
-    margin-top: 5px;
-    text-align: center;
-    font-size: 12px;
+.cpg__stats--no-border {
+	border-right: none;
 }
 
-.cpg__stats--hidden{
+.cpg__stats--full {
+	float: left;
+	clear: both;
+	width: 100%;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	padding-top: 5px;
+	margin-top: 10px;
+	text-align: center;
+	font-size: 12px;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+
+.cpg__stats--full:before,
+.cpg__stats--full:after {
+	content: '';
+	display: table;
+	width: 100%;
+}
+
+.cpg__stats--errors {
+	max-height: 500px;
+	overflow: auto;
+	width: 100%;
+	margin: 0;
+}
+
+.cpg__stats--errors a {
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100%;
+	overflow: hidden;
+}
+
+.cpg__stats--hidden {
 	display: none;
 }
 
-.cpg__stats:last-child{
+.cpg__stats:last-child {
 	border-right: 0;
 }
 
-.cpg__stats span{
+.cpg__stats span {
 	font-size: 24px;
 	font-weight: bold;
 	display: block;
 	line-height: 30px;
 }
 
-.cpg__stats--small span{
+.cpg__stats--small span {
 	font-size: 20px;
 	line-height: 30px;
 }
 
-.cpg-postbox table.form-table{
+.cpg-postbox table.form-table {
 	margin-top: 0;
 	margin-bottom: 20px;
 	border-bottom: 1px solid #eee;
 }
 
 .cpg-postbox .form-table tr th,
-.cpg-postbox .form-table tr td{
+.cpg-postbox .form-table tr td {
 	padding: 8px 12px;
 	vertical-align: top;
 }
 
-.cpg-postbox .cpg-color-table input+.iris-picker{
+.cpg-postbox .cpg-color-table input + .iris-picker {
 	margin-top: 0;
-    position: absolute;
-    z-index: 9;
-    left: 0;
-    top: 100%;
+	position: absolute;
+	z-index: 9;
+	left: 0;
+	top: 100%;
 }
 
-.cpg-postbox .form-table tr.disabled{
+.cpg-postbox .form-table tr.disabled {
 	pointer-events: none;
 }
 
-.cpg-postbox .form-table tr.disabled th{
+.cpg-postbox .form-table tr.disabled th {
 	opacity: 0.5;
 	position: relative;
 }
 
-.cpg-postbox .submit{
+.cpg-postbox .submit {
 	margin: 0 0 12px;
 	padding: 8px 12px;
 }
 
-.cpg-color-table{
+.cpg-color-table {
 	width: 100%;
 	border-collapse: collapse;
 	margin-bottom: 10px;
 }
 
-.cpg-color-table tbody>:nth-child(odd){
-    background-color: #f9f9f9;
+.cpg-color-table tbody > :nth-child(odd) {
+	background-color: #f9f9f9;
 }
 
-.cpg-color-table tfoot{
+.cpg-color-table tfoot {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
 }
 
-.cpg-color-table th{
+.cpg-color-table th {
 	text-align: left;
 	width: 150px;
 	padding: 8px 12px;
 	border-bottom: 1px solid #eee;
 }
 
-.cpg-color-table th:last-child{
+.cpg-color-table th:last-child {
 	width: auto;
 }
 
-.cpg-color-table td{
+.cpg-color-table td {
 	padding: 8px 12px;
 	vertical-align: top;
 }
 
-.cpg-color-table td .cpg-color__main-color{
+.cpg-color-table td .cpg-color__main-color {
 	position: relative;
 	padding-bottom: 4px;
 }
 
-.cpg-color-table td span{
+.cpg-color-table td span {
 	display: block;
 	width: 50px;
 	height: 15px;
 }
 
 .cpg-color-table td span.edit,
-.cpg-color-table td span.trash{
+.cpg-color-table td span.trash {
 	display: inline-block;
 	width: auto;
 }
 
-.cpg-color-table td input:focus{
-	background-color: #fff!important;
+.cpg-color-table td input:focus {
+	background-color: #fff !important;
 }
 
-.cpg-color-table__div{
+.cpg-color-table__div {
 	float: left;
 	padding-right: 5px;
 	padding-bottom: 5px;
-    vertical-align: top;
-    position: relative;
+	vertical-align: top;
+	position: relative;
 }
-.cpg-color-table__div .wp-picker-holder{
+.cpg-color-table__div .wp-picker-holder {
 	position: absolute;
 	z-index: 9;
-	box-shadow: 0 0 10px rgba(0,0,0,0.25);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 }
-.cpg-color-table__div .wp-picker-container{
+.cpg-color-table__div .wp-picker-container {
 	display: block;
 	padding-right: 10px;
 }
-.cpg-color-table__div .wp-picker-container .iris-picker{
+.cpg-color-table__div .wp-picker-container .iris-picker {
 	margin-top: 0;
 }
 
-.cpg-delete-color{
-    vertical-align: top;
-    margin-left: -10px;
-    border: none;
-    background: transparent;
-    position: relative;
-    z-index: 2;
-    outline: none;
-    cursor: pointer;
-    position: absolute;
-    right: 5px;
-    top: 2px;
-    opacity: 0;
+.cpg-delete-color {
+	vertical-align: top;
+	margin-left: -10px;
+	border: none;
+	background: transparent;
+	position: relative;
+	z-index: 2;
+	outline: none;
+	cursor: pointer;
+	position: absolute;
+	right: 5px;
+	top: 2px;
+	opacity: 0;
 }
 
-.cpg-color-table__div:hover .cpg-delete-color{
+.cpg-color-table__div:hover .cpg-delete-color {
 	opacity: 1;
 }
 
-.cpg-wrap--hidden{
+.cpg-wrap--hidden {
 	display: none;
 }
 
+.cpg-button-bulk--reset,
 .cpg-button-bulk--regenerate,
-.cpg-reset-table{
+.cpg-reset-table {
 	margin-left: 10px;
+}
+
+.cpg__settings-label {
+	display: inline-block;
+	margin-right: 20px;
 }

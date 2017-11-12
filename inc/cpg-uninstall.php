@@ -20,5 +20,6 @@
 
 			$wpdb->query( "DELETE FROM {$wpdb->term_taxonomy} WHERE taxonomy = '$taxonomy'" );
 		}
+		delete_option( 'cpg_dominant_color_children' );
 		delete_option( 'cpg_options' );
 	}
