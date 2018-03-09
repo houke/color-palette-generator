@@ -67,10 +67,12 @@
     	$searchcolors = $options['color_table'];
 
     	$colors = array();
-		foreach ($searchcolors as $name => $code) {
-			if( isset( $code['code'] ) ){
-	    		$colors[$name] = str_replace('#', '', $code['code']);
-	    	}
+    	if( $searchcolors && is_array($searchcolors) && !empty($searchcolors) ) {
+			foreach ($searchcolors as $name => $code) {
+				if( isset( $code['code'] ) ){
+		    		$colors[$name] = str_replace('#', '', $code['code']);
+		    	}
+		    }
 	    }
 
 		if($key){
@@ -85,11 +87,13 @@
     	$searchcolors = $options['color_table'];
 
     	$colors = array();
-		foreach ($searchcolors as $name => $code) {
-			$tints = isset( $code['tints'] ) ? $code['tints'] : array();
-			array_push($tints, $code['code']);
-	    	$colors[$name] = str_replace('#', '', $tints);
-	    }
+    	if( $searchcolors && is_array($searchcolors) && !empty($searchcolors) ) {
+			foreach ($searchcolors as $name => $code) {
+				$tints = isset( $code['tints'] ) ? $code['tints'] : array();
+				array_push($tints, $code['code']);
+		    	$colors[$name] = str_replace('#', '', $tints);
+		    }
+		}
 
 		if( array_key_exists($color, $colors) ){
 	    	return $colors[$color];
@@ -508,8 +512,10 @@
 		}
 		if( !$reset ){
 		    $searchcolors = cpg_return_colors();
-		    foreach ($searchcolors as $name => $code) {
-		   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
-		    }
+		    if( $searchcolors && is_array($searchcolors) && !empty($searchcolors) ) {
+			    foreach ($searchcolors as $name => $code) {
+			   		wp_insert_term( '#'.$code, 'cpg_dominant_color', array( 'slug' => $code, 'description' => $name ) );
+			    }
+			}
 	    }
 	}
