@@ -62,6 +62,11 @@ Manual Installation:
 
 ## Changelog
 
+### 1.6.2
+
+* Fixed php warning
+* Fixed missing color palettes if no dominant colors are set
+
 ### 1.6.1
 
 * Fixed php warning

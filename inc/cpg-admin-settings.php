@@ -622,7 +622,8 @@ function cpg_colorpalettes_shortcode( $atts ) {
 	$ppp = $atts['total'];
 
 	$terms = get_terms( array(
-    	'taxonomy' => 'cpg_dominant_color'
+    	'taxonomy' => 'cpg_dominant_color',
+    	'hide_empty' => false
     ) );
 
 	$args = array(

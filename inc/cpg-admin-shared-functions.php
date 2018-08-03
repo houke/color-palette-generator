@@ -64,7 +64,7 @@
     //Color array used for filtering
     function cpg_return_colors($key = false){
 		$options = get_option('cpg_options');
-    	$searchcolors = $options['color_table'];
+    	$searchcolors = isset($options['color_table']) ? $options['color_table'] : cpg_default_color_table();
 
     	$colors = array();
     	if( $searchcolors && is_array($searchcolors) && !empty($searchcolors) ) {
@@ -84,7 +84,7 @@
 
 	function cpg_return_tints($color){
 		$options = get_option('cpg_options');
-    	$searchcolors = $options['color_table'];
+    	$searchcolors = isset($options['color_table']) ? $options['color_table'] : cpg_default_color_table();
 
     	$colors = array();
     	if( $searchcolors && is_array($searchcolors) && !empty($searchcolors) ) {
