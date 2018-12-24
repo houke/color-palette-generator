@@ -56,6 +56,12 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 		CPG_VERSION
 	);
     wp_register_script(
+    	'cpg-generate-palette-upload',
+    	plugins_url( 'assets/js/generate-palette-upload.js', dirname(__FILE__) ),
+    	array( 'jquery', 'cpg-color-thief' ),
+		CPG_VERSION
+	);
+    wp_register_script(
     	'cpg-bulk-generate-palette',
     	plugins_url( 'assets/js/bulk-generate-palette.js', dirname(__FILE__) ),
     	array( 'jquery', 'iris', 'cpg-color-thief', 'cpg-admin-functions' ),
@@ -108,9 +114,23 @@ function cpg_load_custom_wp_admin_scripts( $hook ) {
 			'confirm_trash' => __( 'You\'re about to permanently delete this palette.', 'cpg') . "\n" . __('\'Cancel\' to stop, \'OK\' to delete!', 'cpg')
 		)
 	);
+
+	$options = get_option('cpg_options');
+	$colors = isset( $options['colors'] ) ? $options['colors'] : 10;
+	$thumb_w = get_option( 'thumbnail_size_w' );
+	$thumb_h = get_option( 'thumbnail_size_h' );
+	wp_localize_script( 'cpg-generate-palette-upload', 'cpg_upload',
+		array(
+			'colors' => $colors,
+			'_wpnonce' => wp_create_nonce( 'cpg_add_palette_on_upload_nonce' ),
+			'thumb' => '-' . $thumb_w . 'x' . $thumb_h
+		)
+	);
+
+	wp_enqueue_script( 'cpg-generate-palette-upload' );
+
 	switch($hook){
 		case 'upload.php':
-		    wp_enqueue_script( 'cpg-color-thief' );
 		    wp_enqueue_script( 'cpg-admin-functions' );
 		    wp_enqueue_script( 'cpg-generate-palette' );
 		    wp_enqueue_style( 'cpg-generate-palette-column-css' );

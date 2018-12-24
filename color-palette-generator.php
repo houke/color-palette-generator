@@ -3,7 +3,7 @@
 Plugin Name: Color Palette Generator
 Plugin URI: https://github.com/houke/color-palette-generator
 Description: Generates color palettes for your media uploads (jpg, png, gif), shows them on your website and allows you to filter images per color
-Version: 1.6.2
+Version: 1.7.0
 Author: Houke de Kwant
 Author URI: https://github.com/houke/
 Text Domain: cpg
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 //Constants
 $prefix  = 'CPG_';
-$version = '1.6.2';
+$version = '1.7.0';
 
 //Define variables
 $cpg_constants = array(

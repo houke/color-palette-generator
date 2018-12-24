@@ -62,6 +62,9 @@ Manual Installation:
 
 ## Changelog
 
+### 1.7.0
+* Added support for automatic generation of palettes. Disabled by default.
+
 ### 1.6.2
 
 * Fixed php warning

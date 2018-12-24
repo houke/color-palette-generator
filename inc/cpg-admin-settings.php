@@ -55,6 +55,13 @@ function cpg_register_settings() {
 		'cpg_options'
 	);
 	add_settings_field(
+		'cpg_auto_generate',
+		__('Automatically generate palettes on upload?', 'cpg'),
+		'cpg_create_field_auto_generate',
+		'cpg_settings_page',
+		'cpg_options'
+	);
+	add_settings_field(
 		'cpg_make_fields_clickable',
 		__('Should the palette colors link to the search page?', 'cpg'),
 		'cpg_create_field_make_clickable',
@@ -105,6 +112,13 @@ function cpg_create_field_show_on_attachment() {
 	$checked = isset( $options['show_on_attachment'] ) && $options['show_on_attachment'] == 'true' ? 'checked' : '';
 
 	echo '<input id="cpg_show_on_attachment" name="cpg_options[show_on_attachment]" type="checkbox" value="true" '.$checked.'/>';
+}
+
+function cpg_create_field_auto_generate() {
+	$options = get_option('cpg_options');
+	$checked = isset( $options['autogenerate'] ) && $options['autogenerate'] == 'true' ? 'checked' : '';
+
+	echo '<input id="cpg_autogenerate" name="cpg_options[autogenerate]" type="checkbox" value="true" '.$checked.'/><small>' . __('Uploading files via the Media > Add New page? Make sure you use the multi-file uploader.', 'cpg') . '</small>';
 }
 
 function cpg_create_field_make_clickable() {

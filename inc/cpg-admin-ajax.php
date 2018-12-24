@@ -9,13 +9,31 @@ function cpg_add_palette() {
 		$dominant = isset( $_POST['dominant'] ) ? sanitize_text_field( $_POST['dominant'] ) : "";
 		$palette = isset( $_POST['palette'] ) ? array_map( 'sanitize_text_field', $_POST['palette'] ) : "";
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_key( $_POST['nonce'] ) : "" ;
+		$options = get_option('cpg_options');
+		$autogenerate = isset( $options['autogenerate'] ) ? $options['autogenerate'] : false;
 
-		$PKR = new PKRoundColor();
-		$parent = $PKR->getRoundedColor($dominant);
-		
-		if(
+		if( wp_verify_nonce( $nonce, 'cpg_add_palette_on_upload_nonce') &&
+			empty( $post_id ) &&
+			isset($_POST['file'])  &&
+			!empty($_POST['file'])
+		) {
+			$post_id = attachment_url_to_postid( $_POST['file'] );
+			if( empty( $post_id ) ) {
+				$output =  __( 'No file found', 'cpg');
+				echo json_encode( $output );
+   	 			wp_die();
+			}
+		}
+
+		if( wp_verify_nonce( $nonce, 'cpg_add_palette_on_upload_nonce') && !$autogenerate ){
+			$output =  __( 'Auto generation of palettes disabled', 'cpg');
+			echo json_encode( $output );
+		}elseif(
 			get_post_type( $post_id ) == 'attachment' &&
-			wp_verify_nonce( $nonce, 'cpg_add_palette_'.$post_id.'_nonce' )
+			(
+				wp_verify_nonce( $nonce, 'cpg_add_palette_'.$post_id.'_nonce' ) ||
+				wp_verify_nonce( $nonce, 'cpg_add_palette_on_upload_nonce')
+			)
 		){
 		 	wp_cache_flush();
 			wp_defer_term_counting( true );
@@ -114,9 +132,9 @@ function cpg_bulk_add_palette() {
 
 		if( $regenerate === 'reset' ){
 			cpg_setup_taxonomies( false, true );
-			$result = array( 
+			$result = array(
 				'more' => false,
-				'reset' => true 
+				'reset' => true
 			);
 		}elseif( $regenerate == true && wp_verify_nonce( $nonce, 'cpg_bulk_regenerate_palette_nonce' ) ) {
 			cpg_setup_taxonomies( true, false );
